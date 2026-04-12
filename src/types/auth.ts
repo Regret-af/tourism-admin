@@ -1,14 +1,14 @@
 export interface AdminUser {
   id: string
   email: string
-  username: string
+  username?: string
   nickname: string
-  avatarUrl: string
+  avatarUrl?: string
   roles: string[]
-  permissions: string[]
-  status: number
+  permissions?: string[]
+  status?: number
   bio?: string | null
-  createdAt: string
+  createdAt?: string
 }
 
 export interface LoginPayload {

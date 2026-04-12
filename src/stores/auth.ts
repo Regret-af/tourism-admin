@@ -8,6 +8,27 @@ interface AuthState {
   user: AdminUser | null
 }
 
+const normalizeStringArray = (value: unknown) => {
+  if (!Array.isArray(value)) {
+    return []
+  }
+
+  return value.filter((item): item is string => typeof item === 'string')
+}
+
+const normalizeAdminUser = (user: AdminUser): AdminUser => ({
+  id: String(user.id ?? ''),
+  email: user.email ?? '',
+  username: user.username ?? '',
+  nickname: user.nickname ?? user.username ?? user.email ?? '',
+  avatarUrl: user.avatarUrl ?? '',
+  roles: normalizeStringArray(user.roles),
+  permissions: normalizeStringArray(user.permissions),
+  status: typeof user.status === 'number' ? user.status : 1,
+  bio: user.bio ?? null,
+  createdAt: user.createdAt ?? ''
+})
+
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
     token: getToken(),
@@ -29,15 +50,16 @@ export const useAuthStore = defineStore('auth', {
     },
     async login(payload: LoginPayload) {
       const result = await loginApi(payload)
-      this.setAuth(result.accessToken, result.user)
-      return result.user
+      const user = normalizeAdminUser(result.user)
+      this.setAuth(result.accessToken, user)
+      return user
     },
     async fetchProfile() {
       if (!this.token) {
         return null
       }
 
-      const user = await getProfileApi()
+      const user = normalizeAdminUser(await getProfileApi())
       this.user = user
       return user
     },

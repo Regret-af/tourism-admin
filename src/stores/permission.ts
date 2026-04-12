@@ -1,7 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router'
 import { defineStore } from 'pinia'
 import { dashboardRoute, asyncRoutes } from '@/router/routes'
-import { SUPER_ADMIN_ROLE } from '@/constants/permission'
+import { ADMIN_ROLE, SUPER_ADMIN_ROLE } from '@/constants/permission'
 import type { AdminUser } from '@/types/auth'
 
 interface PermissionState {
@@ -20,6 +20,9 @@ const normalizeMetaStringArray = (value: unknown): string[] => {
   return value.filter((item): item is string => typeof item === 'string')
 }
 
+const hasFullAccessRole = (roles: string[]) =>
+  roles.includes(SUPER_ADMIN_ROLE) || roles.includes(ADMIN_ROLE)
+
 const cloneRoute = (route: RouteRecordRaw): RouteRecordRaw => {
   const cloned: RouteRecordRaw = { ...route }
 
@@ -31,7 +34,7 @@ const cloneRoute = (route: RouteRecordRaw): RouteRecordRaw => {
 }
 
 const hasAccess = (route: RouteRecordRaw, roles: string[], permissions: string[]) => {
-  if (roles.includes(SUPER_ADMIN_ROLE)) {
+  if (hasFullAccessRole(roles)) {
     return true
   }
 
@@ -91,9 +94,12 @@ export const usePermissionStore = defineStore('permission', {
       this.isInitialized = false
     },
     generateRoutes(user: AdminUser) {
-      this.roles = user.roles
-      this.permissions = user.permissions
-      this.routes = filterRoutes(asyncRoutes, user.roles, user.permissions)
+      const roles = normalizeMetaStringArray(user.roles)
+      const permissions = normalizeMetaStringArray(user.permissions)
+
+      this.roles = roles
+      this.permissions = permissions
+      this.routes = filterRoutes(asyncRoutes, roles, permissions)
       this.menus = filterMenus([cloneRoute(dashboardRoute), ...this.routes])
       this.isInitialized = true
       return this.routes
@@ -101,7 +107,7 @@ export const usePermissionStore = defineStore('permission', {
     hasAnyPermission(values: string | string[]) {
       const targets = Array.isArray(values) ? values : [values]
 
-      if (this.roles.includes(SUPER_ADMIN_ROLE)) {
+      if (hasFullAccessRole(this.roles)) {
         return true
       }
 
@@ -110,7 +116,7 @@ export const usePermissionStore = defineStore('permission', {
     hasAnyRole(values: string | string[]) {
       const targets = Array.isArray(values) ? values : [values]
 
-      if (this.roles.includes(SUPER_ADMIN_ROLE)) {
+      if (hasFullAccessRole(this.roles)) {
         return true
       }
 

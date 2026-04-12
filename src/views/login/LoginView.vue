@@ -11,8 +11,7 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import { reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { DEFAULT_HOME_PATH, IS_MOCK_ENABLED } from '@/constants/app'
-import { MOCK_LOGIN_CREDENTIALS } from '@/mock/auth'
+import { DEFAULT_HOME_PATH } from '@/constants/app'
 import { useAuthStore } from '@/stores/auth'
 import { getApiErrorMessage } from '@/types/api'
 
@@ -29,8 +28,8 @@ const coverImageUrl =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuB4fyo7xjkPRVGCcL-oe5cKVvuRp19TcUd4523EQUQ1fOKw8DnAiPdNEjksRRsk1Q_Vp8D05n7Tl-tfhZxNa0Xc1vv-SNsLBwu0FINn9eUcuyMGipR7xeLMR3U8EE7Ho2auPW4bf0KKzJ3GC9cUnivY_eUhMv30t2W3iFvVMt_06Uv-NaLOrnngh1lJX121U17sNWgps63T5RzQ5roaipNyLLi9Cko1J3Izyltm354DQCwesCOLftEXn9ID9x87Kv-0FqKToyawl8wI'
 
 const formState = reactive({
-  email: MOCK_LOGIN_CREDENTIALS.email,
-  password: MOCK_LOGIN_CREDENTIALS.password
+  email: '',
+  password: ''
 })
 
 const rules: FormRules = {
@@ -163,15 +162,6 @@ const handleLogin = async () => {
             立即登录
           </el-button>
         </el-form>
-
-        <div v-if="IS_MOCK_ENABLED" class="mock-card">
-          <div class="mock-card-header">
-            <el-icon><CircleCheckFilled /></el-icon>
-            <span>当前为 Mock 模式</span>
-          </div>
-          <p>演示账号：{{ MOCK_LOGIN_CREDENTIALS.email }}</p>
-          <p>演示密码：{{ MOCK_LOGIN_CREDENTIALS.password }}</p>
-        </div>
 
         <div class="panel-footer">
           <div class="security-tip">
@@ -437,35 +427,6 @@ const handleLogin = async () => {
 
 .submit-button:active {
   transform: scale(0.98);
-}
-
-.mock-card {
-  margin-top: 28px;
-  padding: 18px 20px;
-  border: 1px solid rgba(140, 115, 85, 0.16);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.58);
-  color: var(--login-text-soft);
-}
-
-.mock-card-header {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
-  color: var(--login-primary);
-  font-size: var(--app-typo-label-sm-size);
-  font-weight: var(--app-typo-label-sm-weight);
-  line-height: var(--app-typo-label-sm-line-height);
-  letter-spacing: var(--app-typo-label-sm-letter-spacing);
-}
-
-.mock-card p {
-  margin: 6px 0 0;
-  font-size: var(--app-typo-body-xs-size);
-  font-weight: var(--app-typo-body-xs-weight);
-  line-height: var(--app-typo-body-xs-line-height);
-  letter-spacing: var(--app-typo-body-xs-letter-spacing);
 }
 
 .panel-footer {
