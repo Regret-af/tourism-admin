@@ -21,6 +21,22 @@ export const dashboardRoute: RouteRecordRaw = {
 
 export const asyncRoutes: RouteRecordRaw[] = [
   {
+    path: '/users',
+    component: AdminLayout,
+    children: [
+      {
+        path: '',
+        name: 'UserManagement',
+        component: () => import('@/views/user/UserManagementView.vue'),
+        meta: {
+          title: '用户管理',
+          icon: 'User',
+          requiresAuth: true
+        }
+      }
+    ]
+  },
+  {
     path: '/example',
     component: AdminLayout,
     meta: {
