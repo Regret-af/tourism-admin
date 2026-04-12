@@ -315,14 +315,15 @@ const handleLogin = async () => {
   color: #fff;
   background: rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(14px);
-  font-size: 20px;
+  font-size: var(--app-font-size-xl);
 }
 
 .brand-text {
   color: #fff;
-  font-size: 28px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
+  font-size: var(--app-typo-title-lg-size);
+  font-weight: var(--app-typo-title-lg-weight);
+  line-height: var(--app-typo-title-lg-line-height);
+  letter-spacing: var(--app-typo-overline-letter-spacing);
 }
 
 .editorial-copy {
@@ -332,10 +333,10 @@ const handleLogin = async () => {
 .editorial-copy h2 {
   margin: 0;
   color: #fff;
-  font-size: 46px;
-  line-height: 1.28;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  font-size: var(--app-typo-headline-1-size);
+  font-weight: var(--app-typo-headline-1-weight);
+  line-height: var(--app-typo-headline-1-line-height);
+  letter-spacing: var(--app-typo-headline-1-letter-spacing);
 }
 
 .copy-divider {
@@ -361,16 +362,19 @@ const handleLogin = async () => {
 
 .panel-header h1 {
   margin: 0 0 12px;
-  font-size: 36px;
-  line-height: 1.3;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  font-size: var(--app-typo-headline-2-size);
+  font-weight: var(--app-typo-headline-2-weight);
+  line-height: var(--app-typo-headline-2-line-height);
+  letter-spacing: var(--app-typo-headline-2-letter-spacing);
 }
 
 .panel-header p {
   margin: 0;
   color: var(--login-text-soft);
-  font-size: 16px;
+  font-size: var(--app-typo-body-md-size);
+  font-weight: var(--app-typo-body-md-weight);
+  line-height: var(--app-typo-body-md-line-height);
+  letter-spacing: var(--app-typo-body-md-letter-spacing);
 }
 
 .login-form {
@@ -416,9 +420,10 @@ const handleLogin = async () => {
     var(--login-primary-strong) 100%
   );
   color: #fff;
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  font-size: var(--app-typo-title-md-size);
+  font-weight: var(--app-typo-title-md-weight);
+  line-height: var(--app-typo-title-md-line-height);
+  letter-spacing: var(--app-typo-title-md-letter-spacing);
   box-shadow: 0 18px 28px rgba(166, 140, 106, 0.28);
   transition:
     transform 0.2s ease,
@@ -449,13 +454,18 @@ const handleLogin = async () => {
   gap: 8px;
   margin-bottom: 10px;
   color: var(--login-primary);
-  font-size: 13px;
-  font-weight: 700;
+  font-size: var(--app-typo-label-sm-size);
+  font-weight: var(--app-typo-label-sm-weight);
+  line-height: var(--app-typo-label-sm-line-height);
+  letter-spacing: var(--app-typo-label-sm-letter-spacing);
 }
 
 .mock-card p {
   margin: 6px 0 0;
-  font-size: 13px;
+  font-size: var(--app-typo-body-xs-size);
+  font-weight: var(--app-typo-body-xs-weight);
+  line-height: var(--app-typo-body-xs-line-height);
+  letter-spacing: var(--app-typo-body-xs-letter-spacing);
 }
 
 .panel-footer {
@@ -472,9 +482,10 @@ const handleLogin = async () => {
   align-items: center;
   gap: 8px;
   color: rgba(77, 70, 57, 0.44);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
+  font-size: var(--app-typo-overline-size);
+  font-weight: var(--app-typo-overline-weight);
+  line-height: var(--app-typo-overline-line-height);
+  letter-spacing: var(--app-typo-overline-letter-spacing);
   text-transform: uppercase;
 }
 
@@ -505,9 +516,10 @@ const handleLogin = async () => {
 :deep(.login-form .el-form-item__label) {
   padding-bottom: 8px;
   color: var(--login-text-soft);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
+  font-size: var(--app-typo-overline-size);
+  font-weight: var(--app-typo-overline-weight);
+  line-height: var(--app-typo-overline-line-height);
+  letter-spacing: var(--app-typo-overline-letter-spacing);
   text-transform: uppercase;
 }
 
@@ -532,7 +544,10 @@ const handleLogin = async () => {
 
 :deep(.auth-input .el-input__inner) {
   color: var(--login-text);
-  font-size: 15px;
+  font-size: var(--app-typo-body-md-size);
+  font-weight: var(--app-typo-body-md-weight);
+  line-height: var(--app-typo-body-md-line-height);
+  letter-spacing: var(--app-typo-body-md-letter-spacing);
 }
 
 :deep(.auth-input .el-input__inner::placeholder) {
@@ -542,7 +557,7 @@ const handleLogin = async () => {
 :deep(.auth-input .el-input__prefix),
 :deep(.auth-input .el-input__suffix) {
   color: rgba(77, 70, 57, 0.52);
-  font-size: 18px;
+  font-size: var(--app-font-size-xl);
 }
 
 :deep(.login-form .el-form-item.is-error .el-input__wrapper) {
@@ -553,7 +568,10 @@ const handleLogin = async () => {
 
 :deep(.login-form .el-form-item__error) {
   padding-top: 8px;
-  font-size: 12px;
+  font-size: var(--app-typo-body-xs-size);
+  font-weight: var(--app-typo-body-xs-weight);
+  line-height: var(--app-typo-body-xs-line-height);
+  letter-spacing: var(--app-typo-body-xs-letter-spacing);
 }
 
 :deep(.form-row .el-checkbox) {
@@ -562,7 +580,10 @@ const handleLogin = async () => {
   --el-checkbox-input-border-color: rgba(126, 118, 103, 0.6);
   --el-checkbox-checked-input-border-color: var(--login-primary);
   --el-checkbox-checked-bg-color: var(--login-primary);
-  font-size: 14px;
+  font-size: var(--app-typo-body-md-size);
+  font-weight: var(--app-typo-body-md-weight);
+  line-height: var(--app-typo-body-md-line-height);
+  letter-spacing: var(--app-typo-body-md-letter-spacing);
 }
 
 @media (max-width: 1080px) {
@@ -595,7 +616,7 @@ const handleLogin = async () => {
   }
 
   .editorial-copy h2 {
-    font-size: 34px;
+    font-size: var(--app-typo-headline-2-size);
   }
 
   .login-panel {
@@ -607,7 +628,7 @@ const handleLogin = async () => {
   }
 
   .panel-header h1 {
-    font-size: 30px;
+    font-size: var(--app-typo-headline-3-size);
   }
 }
 
@@ -622,7 +643,7 @@ const handleLogin = async () => {
   }
 
   .panel-header h1 {
-    font-size: 28px;
+    font-size: var(--app-typo-headline-3-size);
   }
 
   .panel-footer {

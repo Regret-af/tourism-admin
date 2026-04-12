@@ -150,19 +150,27 @@ const getGroupKeyLabel = (key: AdminMetaOptionKey) => `dict:${key}`
 
 .overview-label {
   color: var(--app-text-secondary);
-  font-size: 13px;
+  font-size: var(--app-typo-label-md-size);
+  font-weight: var(--app-typo-label-md-weight);
+  line-height: var(--app-typo-label-md-line-height);
+  letter-spacing: var(--app-typo-label-md-letter-spacing);
 }
 
 .overview-value {
   margin-top: 18px;
-  font-size: 34px;
-  font-weight: 800;
+  font-size: var(--app-typo-metric-lg-size);
+  font-weight: var(--app-typo-metric-lg-weight);
+  line-height: var(--app-typo-metric-lg-line-height);
+  letter-spacing: var(--app-typo-metric-lg-letter-spacing);
 }
 
 .overview-tips {
   margin-top: 12px;
   color: var(--app-text-secondary);
-  line-height: 1.7;
+  font-size: var(--app-typo-body-sm-size);
+  font-weight: var(--app-typo-body-sm-weight);
+  line-height: var(--app-typo-body-sm-line-height);
+  letter-spacing: var(--app-typo-body-sm-letter-spacing);
 }
 
 .content-grid {
@@ -180,8 +188,10 @@ const getGroupKeyLabel = (key: AdminMetaOptionKey) => `dict:${key}`
 
 .block-title {
   margin-bottom: 14px;
-  font-size: 18px;
-  font-weight: 700;
+  font-size: var(--app-typo-title-lg-size);
+  font-weight: var(--app-typo-title-lg-weight);
+  line-height: var(--app-typo-title-lg-line-height);
+  letter-spacing: var(--app-typo-title-lg-letter-spacing);
 }
 
 .highlight-card ul,
@@ -189,7 +199,10 @@ const getGroupKeyLabel = (key: AdminMetaOptionKey) => `dict:${key}`
   margin: 0;
   padding-left: 20px;
   color: var(--app-text-secondary);
-  line-height: 1.9;
+  font-size: var(--app-typo-body-md-size);
+  font-weight: var(--app-typo-body-md-weight);
+  line-height: var(--app-line-height-relaxed);
+  letter-spacing: var(--app-typo-body-md-letter-spacing);
 }
 
 .meta-card {
@@ -211,7 +224,10 @@ const getGroupKeyLabel = (key: AdminMetaOptionKey) => `dict:${key}`
 
 .meta-group-title {
   margin-bottom: 12px;
-  font-weight: 700;
+  font-size: var(--app-typo-title-sm-size);
+  font-weight: var(--app-typo-title-sm-weight);
+  line-height: var(--app-typo-title-sm-line-height);
+  letter-spacing: var(--app-typo-title-sm-letter-spacing);
 }
 
 .meta-group-body {
@@ -226,7 +242,10 @@ const getGroupKeyLabel = (key: AdminMetaOptionKey) => `dict:${key}`
 
 .meta-empty {
   color: var(--app-text-secondary);
-  font-size: 13px;
+  font-size: var(--app-typo-body-sm-size);
+  font-weight: var(--app-typo-body-sm-weight);
+  line-height: var(--app-typo-body-sm-line-height);
+  letter-spacing: var(--app-typo-body-sm-letter-spacing);
 }
 
 @media (max-width: 1200px) {

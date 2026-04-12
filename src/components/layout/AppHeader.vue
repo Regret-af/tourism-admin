@@ -88,13 +88,19 @@ const handleLogout = async () => {
 }
 
 .account-name {
-  font-weight: 700;
+  font-size: var(--app-typo-title-sm-size);
+  font-weight: var(--app-typo-title-sm-weight);
+  line-height: var(--app-typo-title-sm-line-height);
+  letter-spacing: var(--app-typo-title-sm-letter-spacing);
 }
 
 .account-role {
   margin-top: 4px;
   color: var(--app-text-secondary);
-  font-size: 12px;
+  font-size: var(--app-typo-label-sm-size);
+  font-weight: var(--app-typo-label-sm-weight);
+  line-height: var(--app-typo-label-sm-line-height);
+  letter-spacing: var(--app-typo-label-sm-letter-spacing);
 }
 
 .account-avatar {
@@ -105,7 +111,9 @@ const handleLogout = async () => {
   border-radius: 50%;
   background: linear-gradient(135deg, #14b8a6 0%, #f59e0b 100%);
   color: #082f2b;
-  font-weight: 800;
+  font-size: var(--app-typo-title-md-size);
+  font-weight: var(--app-font-weight-extrabold);
+  line-height: 1;
   cursor: pointer;
 }
 </style>

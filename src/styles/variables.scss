@@ -2,6 +2,129 @@
   --app-sidebar-width: 256px;
   --app-sidebar-collapsed-width: 72px;
   --app-header-height: 64px;
+
+  /* Font Family */
+  --app-font-family-base:
+    'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+
+  /* Font Size */
+  --app-font-size-xs: 13px;
+  --app-font-size-sm: 14px;
+  --app-font-size-md: 15px;
+  --app-font-size-lg: 17px;
+  --app-font-size-xl: 19px;
+  --app-font-size-2xl: 22px;
+  --app-font-size-3xl: 26px;
+  --app-font-size-4xl: 30px;
+  --app-font-size-5xl: 38px;
+  --app-font-size-6xl: 52px;
+  --app-font-size-7xl: 68px;
+  --app-font-size-8xl: 104px;
+
+  /* Font Weight */
+  --app-font-weight-regular: 400;
+  --app-font-weight-medium: 500;
+  --app-font-weight-semibold: 600;
+  --app-font-weight-bold: 700;
+  --app-font-weight-extrabold: 800;
+  --app-font-weight-black: 900;
+
+  /* Line Height */
+  --app-line-height-tight: 1.3;
+  --app-line-height-snug: 1.35;
+  --app-line-height-normal: 1.5;
+  --app-line-height-relaxed: 1.7;
+
+  /* Letter Spacing */
+  --app-letter-spacing-normal: 0;
+  --app-letter-spacing-wide: 0.08em;
+
+  /* Typography Semantics */
+  --app-typo-display-size: var(--app-font-size-8xl);
+  --app-typo-display-weight: var(--app-font-weight-black);
+  --app-typo-display-line-height: 1;
+  --app-typo-display-letter-spacing: var(--app-letter-spacing-normal);
+
+  --app-typo-headline-1-size: var(--app-font-size-5xl);
+  --app-typo-headline-1-weight: var(--app-font-weight-bold);
+  --app-typo-headline-1-line-height: var(--app-line-height-snug);
+  --app-typo-headline-1-letter-spacing: var(--app-letter-spacing-normal);
+
+  --app-typo-headline-2-size: 34px;
+  --app-typo-headline-2-weight: var(--app-font-weight-bold);
+  --app-typo-headline-2-line-height: var(--app-line-height-tight);
+  --app-typo-headline-2-letter-spacing: var(--app-letter-spacing-normal);
+
+  --app-typo-headline-3-size: var(--app-font-size-3xl);
+  --app-typo-headline-3-weight: var(--app-font-weight-bold);
+  --app-typo-headline-3-line-height: var(--app-line-height-tight);
+  --app-typo-headline-3-letter-spacing: var(--app-letter-spacing-normal);
+
+  --app-typo-title-lg-size: var(--app-font-size-xl);
+  --app-typo-title-lg-weight: var(--app-font-weight-bold);
+  --app-typo-title-lg-line-height: var(--app-line-height-tight);
+  --app-typo-title-lg-letter-spacing: var(--app-letter-spacing-normal);
+
+  --app-typo-title-md-size: var(--app-font-size-lg);
+  --app-typo-title-md-weight: var(--app-font-weight-bold);
+  --app-typo-title-md-line-height: var(--app-line-height-tight);
+  --app-typo-title-md-letter-spacing: var(--app-letter-spacing-normal);
+
+  --app-typo-title-sm-size: var(--app-font-size-md);
+  --app-typo-title-sm-weight: var(--app-font-weight-semibold);
+  --app-typo-title-sm-line-height: var(--app-line-height-normal);
+  --app-typo-title-sm-letter-spacing: var(--app-letter-spacing-normal);
+
+  --app-typo-body-lg-size: var(--app-font-size-lg);
+  --app-typo-body-lg-weight: var(--app-font-weight-regular);
+  --app-typo-body-lg-line-height: var(--app-line-height-normal);
+  --app-typo-body-lg-letter-spacing: var(--app-letter-spacing-normal);
+
+  --app-typo-body-md-size: 16px;
+  --app-typo-body-md-weight: var(--app-font-weight-regular);
+  --app-typo-body-md-line-height: var(--app-line-height-normal);
+  --app-typo-body-md-letter-spacing: var(--app-letter-spacing-normal);
+
+  --app-typo-body-sm-size: 15px;
+  --app-typo-body-sm-weight: var(--app-font-weight-regular);
+  --app-typo-body-sm-line-height: var(--app-line-height-relaxed);
+  --app-typo-body-sm-letter-spacing: var(--app-letter-spacing-normal);
+
+  --app-typo-body-xs-size: var(--app-font-size-xs);
+  --app-typo-body-xs-weight: var(--app-font-weight-regular);
+  --app-typo-body-xs-line-height: var(--app-line-height-normal);
+  --app-typo-body-xs-letter-spacing: var(--app-letter-spacing-normal);
+
+  --app-typo-label-md-size: 15px;
+  --app-typo-label-md-weight: var(--app-font-weight-semibold);
+  --app-typo-label-md-line-height: var(--app-line-height-normal);
+  --app-typo-label-md-letter-spacing: var(--app-letter-spacing-normal);
+
+  --app-typo-label-sm-size: 14px;
+  --app-typo-label-sm-weight: var(--app-font-weight-semibold);
+  --app-typo-label-sm-line-height: var(--app-line-height-normal);
+  --app-typo-label-sm-letter-spacing: var(--app-letter-spacing-normal);
+
+  --app-typo-overline-size: var(--app-font-size-xs);
+  --app-typo-overline-weight: var(--app-font-weight-bold);
+  --app-typo-overline-line-height: var(--app-line-height-normal);
+  --app-typo-overline-letter-spacing: var(--app-letter-spacing-wide);
+
+  --app-typo-metric-lg-size: var(--app-font-size-4xl);
+  --app-typo-metric-lg-weight: var(--app-font-weight-extrabold);
+  --app-typo-metric-lg-line-height: 1.1;
+  --app-typo-metric-lg-letter-spacing: var(--app-letter-spacing-normal);
+
+  --app-typo-page-title-size: var(--app-typo-headline-2-size);
+  --app-typo-page-title-weight: var(--app-typo-headline-2-weight);
+  --app-typo-page-title-line-height: var(--app-typo-headline-2-line-height);
+  --app-typo-page-title-letter-spacing: var(--app-typo-headline-2-letter-spacing);
+
+  --app-typo-page-subtitle-size: var(--app-typo-body-md-size);
+  --app-typo-page-subtitle-weight: var(--app-typo-body-md-weight);
+  --app-typo-page-subtitle-line-height: var(--app-typo-body-md-line-height);
+  --app-typo-page-subtitle-letter-spacing: var(--app-typo-body-md-letter-spacing);
+
   --app-bg: #f4f7f2;
   --app-card-bg: rgba(255, 255, 255, 0.92);
   --app-border: rgba(15, 23, 42, 0.08);

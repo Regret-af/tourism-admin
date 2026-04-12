@@ -26,19 +26,28 @@ const router = useRouter()
 }
 
 .code {
-  font-size: 96px;
-  font-weight: 900;
+  font-size: var(--app-typo-display-size);
+  font-weight: var(--app-typo-display-weight);
+  line-height: var(--app-typo-display-line-height);
+  letter-spacing: var(--app-typo-display-letter-spacing);
   color: var(--app-brand);
 }
 
 h1 {
   margin: 0;
+  font-size: var(--app-typo-headline-2-size);
+  font-weight: var(--app-typo-headline-2-weight);
+  line-height: var(--app-typo-headline-2-line-height);
+  letter-spacing: var(--app-typo-headline-2-letter-spacing);
 }
 
 p {
   max-width: 480px;
   color: var(--app-text-secondary);
-  line-height: 1.8;
+  font-size: var(--app-typo-body-md-size);
+  font-weight: var(--app-typo-body-md-weight);
+  line-height: var(--app-line-height-relaxed);
+  letter-spacing: var(--app-typo-body-md-letter-spacing);
 }
 
 .actions {
