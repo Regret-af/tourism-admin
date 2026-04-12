@@ -1,0 +1,7 @@
+export const APP_TITLE = import.meta.env.VITE_APP_TITLE || '旅游后台管理端'
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/v1'
+export const TOKEN_STORAGE_KEY = 'tourism_admin_token'
+export const DEFAULT_HOME_PATH = '/dashboard'
+export const LOGIN_PATH = '/login'
+export const NOT_FOUND_PATH = '/404'
+export const IS_MOCK_ENABLED = import.meta.env.VITE_USE_MOCK === 'true'
