@@ -125,12 +125,23 @@
   --app-typo-page-subtitle-line-height: var(--app-typo-body-md-line-height);
   --app-typo-page-subtitle-letter-spacing: var(--app-typo-body-md-letter-spacing);
 
-  --app-bg: #f4f7f2;
+  --app-bg: #f5f7fa;
+  --app-surface-main: #f8fafc;
+  --app-surface-sidebar: #e9eff5;
+  --app-surface-header: rgba(255, 255, 255, 0.96);
+  --app-surface-elevated: #ffffff;
   --app-card-bg: rgba(255, 255, 255, 0.92);
   --app-border: rgba(15, 23, 42, 0.08);
-  --app-text-primary: #172033;
-  --app-text-secondary: #5f6b7a;
-  --app-brand: #0f766e;
-  --app-brand-light: #dff6f3;
-  --app-accent: #f59e0b;
+  --app-text-primary: #1f2937;
+  --app-text-secondary: #667085;
+  --app-brand: #b65a12;
+  --app-brand-light: #f3e1cb;
+  --app-accent: #cf7c34;
+  --app-sidebar-bg-start: #eef3f8;
+  --app-sidebar-bg-end: #e6ecf3;
+  --app-sidebar-accent: #35607a;
+  --app-sidebar-accent-light: #7aa1ba;
+  --app-sidebar-text: #445465;
+  --app-sidebar-text-strong: #243748;
+  --app-sidebar-active-bg: #ffffff;
 }

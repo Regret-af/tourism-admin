@@ -74,6 +74,9 @@ const handleLogout = async () => {
   min-height: var(--app-header-height);
   padding: 0 20px;
   border-radius: 22px;
+  background: var(--app-surface-header);
+  border-color: var(--app-border);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
 }
 
 .header-left,
@@ -115,5 +118,27 @@ const handleLogout = async () => {
   font-weight: var(--app-font-weight-extrabold);
   line-height: 1;
   cursor: pointer;
+}
+
+:deep(.header-left .el-button) {
+  border-color: var(--app-border);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--app-text-primary);
+}
+
+:deep(.header-left .el-button:hover) {
+  border-color: rgba(15, 23, 42, 0.12);
+  background: rgba(248, 250, 252, 0.96);
+  color: var(--app-text-primary);
+}
+
+:deep(.el-breadcrumb__inner),
+:deep(.el-breadcrumb__inner a) {
+  color: var(--app-text-secondary);
+  font-weight: var(--app-font-weight-medium);
+}
+
+:deep(.el-breadcrumb__item:last-child .el-breadcrumb__inner) {
+  color: var(--app-text-primary);
 }
 </style>
