@@ -9,11 +9,7 @@ import {
 } from '@/api/diaries'
 import { getUserOptionsApi } from '@/api/users'
 import { useMetaStore } from '@/stores/meta'
-import {
-  getApiErrorMessage,
-  isApiRequestError,
-  type PageResult
-} from '@/types/api'
+import { getApiErrorMessage, isApiRequestError, type PageResult } from '@/types/api'
 import type { DiaryDetail, DiaryListItem, DiaryListQuery } from '@/types/diary'
 import type { UserOptionItem } from '@/types/user'
 import { formatDateTime } from '@/utils/format'
@@ -64,19 +60,10 @@ const statusForm = reactive<StatusFormState>({
 })
 
 const statusOptions = computed(() => metaStore.getOptions('diaryStatuses'))
-const visibilityOptions = computed(() =>
-  metaStore.getOptions('diaryVisibilities')
-)
+const visibilityOptions = computed(() => metaStore.getOptions('diaryVisibilities'))
 const topOptions = computed(() => metaStore.getOptions('diaryTopStatuses'))
-const deletedOptions = computed(() =>
-  metaStore.getOptions('diaryDeletedStatuses')
-)
+const deletedOptions = computed(() => metaStore.getOptions('diaryDeletedStatuses'))
 const detailTitle = computed(() => detailData.value?.title || '日记详情')
-const selectedAuthorLabel = computed(
-  () =>
-    authorOptions.value.find((item) => item.id === queryState.authorId)
-      ?.nickname || ''
-)
 
 const syncPublishedRangeToQuery = () => {
   if (publishedRange.value.length === 2) {
@@ -121,8 +108,7 @@ const getDiaryStatusTagType = (status: number) => {
   return 'info'
 }
 
-const getDeletedTagType = (isDeleted: number) =>
-  Number(isDeleted) === 1 ? 'danger' : 'success'
+const getDeletedTagType = (isDeleted: number) => (Number(isDeleted) === 1 ? 'danger' : 'success')
 
 const getContentTypeText = (value: string | number | null | undefined) => {
   if (value === undefined || value === null || value === '') {
@@ -161,12 +147,10 @@ const loadAuthorOptions = async (keyword = '') => {
   authorLoading.value = true
 
   try {
-    const options = await getUserOptionsApi({
+    authorOptions.value = await getUserOptionsApi({
       keyword: trimmedKeyword,
       pageSize: 20
     })
-
-    authorOptions.value = options
   } catch (error) {
     showRequestError(error, '作者选项加载失败')
   } finally {
@@ -265,7 +249,7 @@ const handleSubmitStatus = async () => {
 
 const handleToggleDeleted = async (row: DiaryListItem) => {
   const nextDeletedStatus = Number(row.isDeleted) === 1 ? 0 : 1
-  const actionText = nextDeletedStatus === 1 ? '逻辑删除' : '恢复'
+  const actionText = nextDeletedStatus === 1 ? '删除' : '恢复'
   const nextDeletedLabel = metaStore.getLabel(
     'diaryDeletedStatuses',
     nextDeletedStatus,
@@ -275,7 +259,7 @@ const handleToggleDeleted = async (row: DiaryListItem) => {
   try {
     await ElMessageBox.confirm(
       nextDeletedStatus === 1
-        ? `确认将日记“${row.title}”标记为逻辑删除吗？`
+        ? `确认删除日记“${row.title}”吗？`
         : `确认恢复日记“${row.title}”吗？`,
       `${actionText}日记`,
       {
@@ -316,10 +300,6 @@ void loadData()
     <div class="page-header">
       <div>
         <h1 class="page-title">日记管理</h1>
-        <p class="page-subtitle">
-          对接
-          `/api/v1/admin/travel-diaries`，支持筛选查询、详情查看、状态修改与逻辑删除切换。
-        </p>
       </div>
     </div>
 
@@ -342,7 +322,7 @@ void loadData()
 
     <section v-loading="loading" class="page-card filter-card">
       <el-form :inline="true" :model="queryState">
-        <el-form-item label="关键字">
+        <el-form-item label="关键词">
           <el-input
             v-model="queryState.keyword"
             :disabled="loading"
@@ -396,8 +376,8 @@ void loadData()
             v-model="queryState.contentType"
             :disabled="loading"
             clearable
-            placeholder="原值筛选"
-            style="width: 140px"
+            placeholder="按原值筛选"
+            style="width: 160px"
             @keyup.enter="handleSearch"
           />
         </el-form-item>
@@ -466,9 +446,7 @@ void loadData()
         </el-form-item>
 
         <el-form-item>
-          <el-button :loading="loading" type="primary" @click="handleSearch"
-            >查询</el-button
-          >
+          <el-button :loading="loading" type="primary" @click="handleSearch">查询</el-button>
           <el-button :disabled="loading" @click="handleReset">重置</el-button>
         </el-form-item>
       </el-form>
@@ -477,146 +455,68 @@ void loadData()
     <section class="page-card table-card">
       <div class="table-toolbar">
         <div class="table-summary">
-          共
-          <span class="table-summary-value">{{ pageData.total }}</span> 篇日记
-        </div>
-        <div v-if="queryState.authorId" class="filter-chip">
-          当前作者：{{ selectedAuthorLabel || queryState.authorId }}
+          共 <span class="table-summary-value">{{ pageData.total }}</span> 篇日记
         </div>
       </div>
-      <el-table
-        :data="pageData.list"
-        :loading="loading"
-        row-key="id"
-        empty-text="暂无日记数据"
-      >
-        <el-table-column label="日记信息" min-width="340">
-          <template #default="{ row }">
-            <div class="diary-cell">
-              <div class="cover-box">
-                <el-image
-                  v-if="row.coverUrl"
-                  :src="row.coverUrl"
-                  fit="cover"
-                  class="cover-image"
-                />
-                <div v-else class="cover-placeholder">无封面</div>
-              </div>
 
-              <div class="diary-content">
-                <div class="diary-title">{{ row.title || '--' }}</div>
-                <div class="diary-summary">{{ row.summary || '暂无摘要' }}</div>
-                <div class="diary-meta">ID：{{ row.id }}</div>
-              </div>
+      <el-table :data="pageData.list" :loading="loading" row-key="id" empty-text="暂无日记数据">
+        <el-table-column label="作品封面" width="120" align="center">
+          <template #default="{ row }">
+            <div class="cover-box">
+              <el-image
+                v-if="row.coverUrl"
+                :src="row.coverUrl"
+                fit="cover"
+                class="cover-image"
+              />
+              <div v-else class="cover-placeholder">暂无封面</div>
             </div>
           </template>
         </el-table-column>
 
-        <el-table-column label="作者" min-width="160">
+        <el-table-column label="标题" min-width="200" show-overflow-tooltip>
           <template #default="{ row }">
-            <div class="author-cell">
-              <div class="author-name">{{ row.author?.nickname || '--' }}</div>
-              <div class="author-meta">
-                用户 ID：{{ row.author?.id || '--' }}
-              </div>
-            </div>
+            <div class="diary-title">{{ row.title || '--' }}</div>
           </template>
         </el-table-column>
 
-        <el-table-column label="内容属性" min-width="220">
+        <el-table-column label="作者" min-width="120" show-overflow-tooltip>
           <template #default="{ row }">
-            <div class="tag-group">
-              <el-tag effect="plain"
-                >类型：{{ getContentTypeText(row.contentType) }}</el-tag
-              >
-
-              <el-tag effect="plain">
-                {{
-                  metaStore.getLabel(
-                    'diaryVisibilities',
-                    row.visibility,
-                    String(row.visibility)
-                  )
-                }}
-              </el-tag>
-              <el-tag effect="plain">
-                {{
-                  metaStore.getLabel(
-                    'diaryTopStatuses',
-                    row.isTop,
-                    String(row.isTop)
-                  )
-                }}
-              </el-tag>
-            </div>
+            <div class="author-name">{{ row.author?.nickname || '--' }}</div>
           </template>
         </el-table-column>
 
-        <el-table-column label="互动数据" min-width="200">
+        <el-table-column label="类型" width="120" align="center">
           <template #default="{ row }">
-            <div class="metric-grid">
-              <span>浏览 {{ row.viewCount ?? 0 }}</span>
-              <span>点赞 {{ row.likeCount ?? 0 }}</span>
-              <span>收藏 {{ row.favoriteCount ?? 0 }}</span>
-              <span>评论 {{ row.commentCount ?? 0 }}</span>
-            </div>
+            {{ getContentTypeText(row.contentType) }}
           </template>
         </el-table-column>
 
-        <el-table-column label="状态" min-width="180">
+        <el-table-column label="状态" width="120" align="center">
           <template #default="{ row }">
-            <div class="status-stack">
-              <el-tag :type="getDiaryStatusTagType(row.status)" effect="light">
-                {{
-                  metaStore.getLabel(
-                    'diaryStatuses',
-                    row.status,
-                    String(row.status)
-                  )
-                }}
-              </el-tag>
-              <el-tag :type="getDeletedTagType(row.isDeleted)" effect="light">
-                {{
-                  metaStore.getLabel(
-                    'diaryDeletedStatuses',
-                    row.isDeleted,
-                    String(row.isDeleted)
-                  )
-                }}
-              </el-tag>
-            </div>
+            <el-tag :type="getDiaryStatusTagType(row.status)" effect="light">
+              {{ metaStore.getLabel('diaryStatuses', row.status, String(row.status)) }}
+            </el-tag>
           </template>
         </el-table-column>
 
-        <el-table-column label="发布时间" min-width="180">
+        <el-table-column label="发布时间" width="170" align="center">
           <template #default="{ row }">
             {{ formatDateTime(row.publishedAt) }}
           </template>
         </el-table-column>
 
-        <el-table-column label="更新时间" min-width="180">
+        <el-table-column label="操作" fixed="right" width="300" align="center">
           <template #default="{ row }">
-            {{ formatDateTime(row.updatedAt) }}
-          </template>
-        </el-table-column>
-
-        <el-table-column label="操作" fixed="right" min-width="220">
-          <template #default="{ row }">
-            <el-button link type="primary" @click="handleViewDetail(row)"
-              >详情</el-button
-            >
-
-            <el-button link type="primary" @click="openStatusDialog(row)"
-              >修改状态</el-button
-            >
-
+            <el-button link type="primary" @click="handleViewDetail(row)">详情</el-button>
+            <el-button link type="primary" @click="openStatusDialog(row)">修改状态</el-button>
             <el-button
               link
               :loading="updatingDeletedId === row.id"
               :type="Number(row.isDeleted) === 1 ? 'success' : 'danger'"
               @click="handleToggleDeleted(row)"
             >
-              {{ Number(row.isDeleted) === 1 ? '恢复' : '逻辑删除' }}
+              {{ Number(row.isDeleted) === 1 ? '恢复' : '删除' }}
             </el-button>
           </template>
         </el-table-column>
@@ -659,22 +559,10 @@ void loadData()
             <div class="detail-hero-content">
               <div class="detail-title-row">
                 <span class="detail-name">{{ detailData.title || '--' }}</span>
-                <el-tag
-                  :type="getDiaryStatusTagType(detailData.status)"
-                  effect="light"
-                >
-                  {{
-                    metaStore.getLabel(
-                      'diaryStatuses',
-                      detailData.status,
-                      String(detailData.status)
-                    )
-                  }}
+                <el-tag :type="getDiaryStatusTagType(detailData.status)" effect="light">
+                  {{ metaStore.getLabel('diaryStatuses', detailData.status, String(detailData.status)) }}
                 </el-tag>
-                <el-tag
-                  :type="getDeletedTagType(detailData.isDeleted)"
-                  effect="light"
-                >
+                <el-tag :type="getDeletedTagType(detailData.isDeleted)" effect="light">
                   {{
                     metaStore.getLabel(
                       'diaryDeletedStatuses',
@@ -686,18 +574,11 @@ void loadData()
               </div>
 
               <div class="detail-subline">
-                作者：{{ detailData.author?.nickname || '--' }} /
-                {{ detailData.author?.id || '--' }}
+                作者：{{ detailData.author?.nickname || '--' }} / {{ detailData.author?.id || '--' }}
               </div>
 
               <div class="tag-group detail-tag-group">
-                <el-tag effect="plain"
-                  >类型：{{
-                    getContentTypeText(detailData.contentType)
-                  }}</el-tag
-                >
-
-                >
+                <el-tag effect="plain">类型：{{ getContentTypeText(detailData.contentType) }}</el-tag>
                 <el-tag effect="plain">
                   {{
                     metaStore.getLabel(
@@ -708,13 +589,7 @@ void loadData()
                   }}
                 </el-tag>
                 <el-tag effect="plain">
-                  {{
-                    metaStore.getLabel(
-                      'diaryTopStatuses',
-                      detailData.isTop,
-                      String(detailData.isTop)
-                    )
-                  }}
+                  {{ metaStore.getLabel('diaryTopStatuses', detailData.isTop, String(detailData.isTop)) }}
                 </el-tag>
               </div>
             </div>
@@ -742,10 +617,7 @@ void loadData()
           <section class="detail-card">
             <div class="detail-card-title">基础信息</div>
             <el-descriptions :column="2" border>
-              <el-descriptions-item label="日记 ID">{{
-                detailData.id
-              }}</el-descriptions-item>
-
+              <el-descriptions-item label="日记 ID">{{ detailData.id }}</el-descriptions-item>
               <el-descriptions-item label="发布时间">
                 {{ formatDateTime(detailData.publishedAt) }}
               </el-descriptions-item>
@@ -765,9 +637,7 @@ void loadData()
 
           <section class="detail-card">
             <div class="detail-card-title">正文</div>
-            <div class="text-block content-block">
-              {{ detailData.content || '暂无正文内容' }}
-            </div>
+            <div class="text-block content-block">{{ detailData.content || '暂无正文内容' }}</div>
           </section>
         </template>
       </div>
@@ -798,23 +668,10 @@ void loadData()
         </el-form-item>
       </el-form>
 
-      <div class="dialog-tip">
-        接口仅提交 `status` 字段，不包含审核备注、审核人或审核时间。
-      </div>
-
       <template #footer>
         <span class="dialog-footer">
-          <el-button
-            :disabled="statusSubmitting"
-            @click="statusDialogVisible = false"
-          >
-            取消
-          </el-button>
-          <el-button
-            :loading="statusSubmitting"
-            type="primary"
-            @click="handleSubmitStatus"
-          >
+          <el-button :disabled="statusSubmitting" @click="statusDialogVisible = false">取消</el-button>
+          <el-button :loading="statusSubmitting" type="primary" @click="handleSubmitStatus">
             保存
           </el-button>
         </span>
@@ -857,66 +714,38 @@ void loadData()
   font-weight: var(--app-font-weight-bold);
 }
 
-.filter-chip {
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(14, 116, 144, 0.08);
-  color: #0f766e;
-  font-size: var(--app-typo-body-sm-size);
-  font-weight: var(--app-typo-body-sm-weight);
-}
-
-.diary-cell {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-}
-
-.cover-box,
-.detail-cover-box {
+.cover-box {
   overflow: hidden;
-  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
   border: 1px solid var(--app-border);
-  border-radius: 16px;
+  border-radius: 14px;
   background: rgba(15, 23, 42, 0.04);
 }
 
-.cover-box {
-  width: 92px;
-  height: 68px;
-}
-
-.detail-cover-box {
-  width: 180px;
-  height: 128px;
-  border-radius: 22px;
-}
-
-.cover-image,
-.detail-cover-image {
+.cover-image {
+  display: block;
   width: 100%;
   height: 100%;
-  display: block;
 }
 
-.cover-placeholder,
-.detail-cover-placeholder {
+.cover-placeholder {
   display: grid;
   width: 100%;
   height: 100%;
   place-items: center;
   color: var(--app-text-secondary);
   font-size: var(--app-typo-body-sm-size);
+  line-height: 1.4;
+  text-align: center;
 }
 
 .diary-content,
-.author-cell,
 .detail-hero-content {
   min-width: 0;
 }
 
-.diary-title,
-.author-name {
+.diary-title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -927,8 +756,6 @@ void loadData()
 }
 
 .diary-summary,
-.diary-meta,
-.author-meta,
 .detail-subline {
   margin-top: 6px;
   color: var(--app-text-secondary);
@@ -942,7 +769,7 @@ void loadData()
   display: -webkit-box;
   overflow: hidden;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
 }
 
 .tag-group {
@@ -953,20 +780,6 @@ void loadData()
 
 .detail-tag-group {
   margin-top: 12px;
-}
-
-.metric-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px 12px;
-  color: var(--app-text-secondary);
-  font-size: var(--app-typo-body-sm-size);
-}
-
-.status-stack {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
 }
 
 .pagination-wrap {
@@ -984,6 +797,31 @@ void loadData()
   gap: 18px;
   align-items: flex-start;
   padding: 4px 0 20px;
+}
+
+.detail-cover-box {
+  overflow: hidden;
+  width: 180px;
+  height: 128px;
+  flex-shrink: 0;
+  border: 1px solid var(--app-border);
+  border-radius: 22px;
+  background: rgba(15, 23, 42, 0.04);
+}
+
+.detail-cover-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.detail-cover-placeholder {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  color: var(--app-text-secondary);
+  font-size: var(--app-typo-body-sm-size);
 }
 
 .detail-title-row {
@@ -1060,15 +898,6 @@ void loadData()
   word-break: break-word;
 }
 
-.dialog-tip {
-  margin-top: 8px;
-  color: var(--app-text-secondary);
-  font-size: var(--app-typo-body-sm-size);
-  font-weight: var(--app-typo-body-sm-weight);
-  line-height: var(--app-typo-body-sm-line-height);
-  letter-spacing: var(--app-typo-body-sm-letter-spacing);
-}
-
 @media (max-width: 1200px) {
   .stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1076,7 +905,6 @@ void loadData()
 }
 
 @media (max-width: 960px) {
-  .table-toolbar,
   .detail-hero {
     flex-direction: column;
   }
@@ -1086,8 +914,7 @@ void loadData()
     height: 180px;
   }
 
-  .stats-grid,
-  .metric-grid {
+  .stats-grid {
     grid-template-columns: 1fr;
   }
 }
