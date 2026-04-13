@@ -37,6 +37,22 @@ export const asyncRoutes: RouteRecordRaw[] = [
     ]
   },
   {
+    path: '/logs',
+    component: AdminLayout,
+    children: [
+      {
+        path: '',
+        name: 'OperationLogManagement',
+        component: () => import('@/views/log/OperationLogManagementView.vue'),
+        meta: {
+          title: '日志管理',
+          icon: 'Tickets',
+          requiresAuth: true
+        }
+      }
+    ]
+  },
+  {
     path: '/diaries',
     component: AdminLayout,
     redirect: '/diaries/content',
@@ -83,7 +99,8 @@ export const asyncRoutes: RouteRecordRaw[] = [
       {
         path: 'list',
         name: 'AttractionManagement',
-        component: () => import('@/views/attraction/AttractionManagementView.vue'),
+        component: () =>
+          import('@/views/attraction/AttractionManagementView.vue'),
         meta: {
           title: '景点管理',
           icon: 'Place',
