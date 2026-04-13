@@ -4,7 +4,13 @@ import { computed, reactive, ref } from 'vue'
 import { getDiaryCommentPageApi, updateDiaryCommentStatusApi } from '@/api/comments'
 import { getUserOptionsApi } from '@/api/users'
 import { useMetaStore } from '@/stores/meta'
-import { getApiErrorMessage, isApiRequestError, type PageResult } from '@/types/api'
+import {
+  clampAdminPageSize,
+  getApiErrorMessage,
+  isApiRequestError,
+  normalizePageResult,
+  type PageResult
+} from '@/types/api'
 import type { DiaryCommentListItem, DiaryCommentListQuery } from '@/types/comment'
 import type { UserOptionItem } from '@/types/user'
 import { formatDateTime } from '@/utils/format'
@@ -85,11 +91,15 @@ const loadData = async () => {
   loading.value = true
 
   try {
-    pageData.value = await getDiaryCommentPageApi({
-      ...queryState,
-      keyword: queryState.keyword.trim(),
-      diaryId: queryState.diaryId?.trim() || undefined
-    })
+    pageData.value = normalizePageResult(
+      await getDiaryCommentPageApi({
+        ...queryState,
+        keyword: queryState.keyword.trim(),
+        diaryId: queryState.diaryId?.trim() || undefined
+      })
+    )
+    queryState.pageNum = pageData.value.pageNum
+    queryState.pageSize = pageData.value.pageSize
   } catch (error) {
     showRequestError(error, '评论列表加载失败')
   } finally {
@@ -146,7 +156,7 @@ const handlePageChange = (pageNum: number) => {
 }
 
 const handlePageSizeChange = (pageSize: number) => {
-  queryState.pageSize = pageSize
+  queryState.pageSize = clampAdminPageSize(pageSize, 10)
   queryState.pageNum = 1
   void loadData()
 }
@@ -373,7 +383,7 @@ void loadData()
           layout="total, sizes, prev, pager, next, jumper"
           :current-page="pageData.pageNum"
           :page-size="pageData.pageSize"
-          :page-sizes="[10, 20, 50, 100]"
+          :page-sizes="[10, 20, 50]"
           :total="pageData.total"
           @current-change="handlePageChange"
           @size-change="handlePageSizeChange"

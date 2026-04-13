@@ -1,4 +1,4 @@
-import type { PageResult } from '@/types/api'
+import { clampAdminPageSize, type PageResult } from '@/types/api'
 import type {
   AttractionCategoryDetail,
   AttractionCategoryListItem,
@@ -11,8 +11,13 @@ import type {
 import request from '@/utils/request'
 
 export const getAttractionCategoryPageApi = (params: AttractionCategoryListQuery) => {
+  const normalizedParams: AttractionCategoryListQuery = {
+    ...params,
+    pageSize: clampAdminPageSize(params.pageSize, 10)
+  }
+
   return request.get<PageResult<AttractionCategoryListItem>>('/admin/attraction-categories', {
-    params
+    params: normalizedParams
   })
 }
 

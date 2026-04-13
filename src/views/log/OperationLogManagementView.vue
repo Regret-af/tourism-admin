@@ -8,8 +8,10 @@ import {
 import { getUserOptionsApi } from '@/api/users'
 import { useMetaStore } from '@/stores/meta'
 import {
+  clampAdminPageSize,
   getApiErrorMessage,
   isApiRequestError,
+  normalizePageResult,
   type PageResult
 } from '@/types/api'
 import type {
@@ -101,29 +103,23 @@ const getTagTypeBySource = (source: string) => {
   return String(source).toUpperCase() === 'ADMIN' ? 'success' : 'info'
 }
 
-const toSafeNumber = (value: unknown, fallback: number) => {
-  const parsed = Number(value)
-  return Number.isFinite(parsed) ? parsed : fallback
-}
-
 const loadData = async () => {
   syncCreatedRangeToQuery()
   loading.value = true
 
   try {
-    const response = await getOperationLogPageApi({
-      ...queryState,
-      requestIp: queryState.requestIp.trim()
-    })
-
-    pageData.value = {
-      ...response,
-      pageNum: toSafeNumber(response.pageNum, 1),
-      pageSize: toSafeNumber(response.pageSize, 10),
-      total: toSafeNumber(response.total, 0),
-      pages: toSafeNumber(response.pages, 1)
-    }
-
+    pageData.value = normalizePageResult(
+      await getOperationLogPageApi({
+        ...queryState,
+        requestIp: queryState.requestIp.trim()
+      }),
+      {
+        pageNum: 1,
+        pageSize: 10,
+        total: 0,
+        pages: 1
+      }
+    )
     queryState.pageNum = pageData.value.pageNum
     queryState.pageSize = pageData.value.pageSize
   } catch (error) {
@@ -183,7 +179,7 @@ const handlePageChange = (pageNum: number) => {
 }
 
 const handlePageSizeChange = (pageSize: number) => {
-  queryState.pageSize = pageSize
+  queryState.pageSize = clampAdminPageSize(pageSize, 10)
   queryState.pageNum = 1
   void loadData()
 }
@@ -457,7 +453,7 @@ void loadData()
           v-model:page-size="queryState.pageSize"
           background
           layout="total, sizes, prev, pager, next, jumper"
-          :page-sizes="[10, 20, 50, 100]"
+          :page-sizes="[10, 20, 50]"
           :total="pageData.total"
           @current-change="handlePageChange"
           @size-change="handlePageSizeChange"

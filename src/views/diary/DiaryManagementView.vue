@@ -9,7 +9,13 @@ import {
 } from '@/api/diaries'
 import { getUserOptionsApi } from '@/api/users'
 import { useMetaStore } from '@/stores/meta'
-import { getApiErrorMessage, isApiRequestError, type PageResult } from '@/types/api'
+import {
+  clampAdminPageSize,
+  getApiErrorMessage,
+  isApiRequestError,
+  normalizePageResult,
+  type PageResult
+} from '@/types/api'
 import type { DiaryDetail, DiaryListItem, DiaryListQuery } from '@/types/diary'
 import type { UserOptionItem } from '@/types/user'
 import { formatDateTime } from '@/utils/format'
@@ -123,10 +129,21 @@ const loadData = async () => {
   loading.value = true
 
   try {
-    pageData.value = await getDiaryPageApi({
-      ...queryState,
-      contentType: queryState.contentType?.trim() || undefined
-    })
+    pageData.value = normalizePageResult(
+      await getDiaryPageApi({
+        ...queryState,
+        contentType: queryState.contentType?.trim() || undefined
+      }),
+      {
+        pageNum: 1,
+        pageSize: 10,
+        total: 0,
+        pages: 1
+      }
+    )
+
+    queryState.pageNum = pageData.value.pageNum
+    queryState.pageSize = pageData.value.pageSize
   } catch (error) {
     showRequestError(error, '日记列表加载失败')
   } finally {
@@ -186,7 +203,7 @@ const handlePageChange = (pageNum: number) => {
 }
 
 const handlePageSizeChange = (pageSize: number) => {
-  queryState.pageSize = pageSize
+  queryState.pageSize = clampAdminPageSize(pageSize, 10)
   queryState.pageNum = 1
   void loadData()
 }
@@ -529,7 +546,7 @@ void loadData()
           layout="total, sizes, prev, pager, next, jumper"
           :current-page="pageData.pageNum"
           :page-size="pageData.pageSize"
-          :page-sizes="[10, 20, 50, 100]"
+          :page-sizes="[10, 20, 50]"
           :total="pageData.total"
           @current-change="handlePageChange"
           @size-change="handlePageSizeChange"

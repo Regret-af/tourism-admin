@@ -3,7 +3,12 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { computed, reactive, ref } from 'vue'
 import { getUserDetailApi, getUserPageApi, updateUserStatusApi } from '@/api/users'
 import { useMetaStore } from '@/stores/meta'
-import { getApiErrorMessage, isApiRequestError } from '@/types/api'
+import {
+  clampAdminPageSize,
+  getApiErrorMessage,
+  isApiRequestError,
+  normalizePageResult
+} from '@/types/api'
 import type { PageResult } from '@/types/api'
 import type { UserDetail, UserListItem, UserListQuery } from '@/types/user'
 import { formatDateTime } from '@/utils/format'
@@ -75,9 +80,9 @@ const loadData = async () => {
   loading.value = true
 
   try {
-    pageData.value = await getUserPageApi({
-      ...queryState
-    })
+    pageData.value = normalizePageResult(await getUserPageApi({ ...queryState }))
+    queryState.pageNum = pageData.value.pageNum
+    queryState.pageSize = pageData.value.pageSize
   } catch (error) {
     showRequestError(error, '用户列表加载失败')
   } finally {
@@ -108,7 +113,7 @@ const handlePageChange = (pageNum: number) => {
 }
 
 const handlePageSizeChange = (pageSize: number) => {
-  queryState.pageSize = pageSize
+  queryState.pageSize = clampAdminPageSize(pageSize, 10)
   queryState.pageNum = 1
   void loadData()
 }
@@ -341,7 +346,7 @@ void loadData()
           layout="total, sizes, prev, pager, next, jumper"
           :current-page="pageData.pageNum"
           :page-size="pageData.pageSize"
-          :page-sizes="[10, 20, 50, 100]"
+          :page-sizes="[10, 20, 50]"
           :total="pageData.total"
           @current-change="handlePageChange"
           @size-change="handlePageSizeChange"

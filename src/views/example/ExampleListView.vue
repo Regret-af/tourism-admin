@@ -5,8 +5,7 @@ import { useRouter } from 'vue-router'
 import { getExamplePageApi } from '@/api/example'
 import { IS_MOCK_ENABLED } from '@/constants/app'
 import { useMetaStore } from '@/stores/meta'
-import type { PageResult } from '@/types/api'
-import { getApiErrorMessage } from '@/types/api'
+import { getApiErrorMessage, normalizePageResult, type PageResult } from '@/types/api'
 import type { ExampleItem, ExampleQuery } from '@/types/example'
 import { formatDateTime } from '@/utils/format'
 
@@ -34,9 +33,9 @@ const loadData = async () => {
   loading.value = true
 
   try {
-    pageData.value = await getExamplePageApi({
-      ...queryState
-    })
+    pageData.value = normalizePageResult(await getExamplePageApi({ ...queryState }))
+    queryState.pageNum = pageData.value.pageNum
+    queryState.pageSize = pageData.value.pageSize
   } catch (error) {
     ElMessage.error(getApiErrorMessage(error))
   } finally {

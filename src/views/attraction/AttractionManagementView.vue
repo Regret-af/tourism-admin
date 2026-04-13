@@ -13,7 +13,12 @@ import {
 } from '@/api/attractions'
 import { getAttractionCategoryPageApi } from '@/api/attractionCategories'
 import { useMetaStore } from '@/stores/meta'
-import { getApiErrorMessage, isApiRequestError, type PageResult } from '@/types/api'
+import {
+  getApiErrorMessage,
+  isApiRequestError,
+  normalizePageResult,
+  type PageResult
+} from '@/types/api'
 import type {
   AttractionCategorySummary,
   AttractionDetail,
@@ -218,20 +223,6 @@ const ensureCategoryOption = (category: AttractionCategorySummary | string | nul
 const getStatusTagType = (status: number) => (Number(status) === 1 ? 'success' : 'info')
 const isAttractionOnline = (status: number) => Number(status) === 1
 const getNextStatus = (status: number) => (isAttractionOnline(status) ? 0 : 1)
-const toSafeNumber = (value: unknown, fallback: number) => {
-  const parsedValue =
-    typeof value === 'number' ? value : Number.parseInt(String(value ?? ''), 10)
-
-  return Number.isFinite(parsedValue) ? parsedValue : fallback
-}
-
-const normalizePageResult = <T,>(result: PageResult<T>): PageResult<T> => ({
-  ...result,
-  pageNum: toSafeNumber(result.pageNum, 1),
-  pageSize: toSafeNumber(result.pageSize, DEFAULT_PAGE_SIZE),
-  total: toSafeNumber(result.total, 0),
-  pages: toSafeNumber(result.pages, 1)
-})
 
 const normalizeOptionalText = (value: string) => {
   const trimmed = value.trim()
@@ -286,8 +277,16 @@ const loadData = async () => {
       await getAttractionPageApi({
         ...queryState,
         keyword: queryState.keyword.trim()
-      })
+      }),
+      {
+        pageNum: 1,
+        pageSize: DEFAULT_PAGE_SIZE,
+        total: 0,
+        pages: 1
+      }
     )
+    queryState.pageNum = pageData.value.pageNum
+    queryState.pageSize = pageData.value.pageSize
   } catch (error) {
     showRequestError(error, '景点列表加载失败')
   } finally {
@@ -311,7 +310,13 @@ const loadCategoryOptions = async (keyword = '') => {
           pageSize: MAX_PAGE_SIZE,
           keyword: normalizedKeyword,
           status: undefined
-        })
+        }),
+        {
+          pageNum: 1,
+          pageSize: MAX_PAGE_SIZE,
+          total: 0,
+          pages: 1
+        }
       )
 
       items.push(...response.list)

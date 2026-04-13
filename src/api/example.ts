@@ -4,17 +4,22 @@ import {
   mockGetExamplePageApi,
   mockSaveExampleApi
 } from '@/mock/example'
-import type { PageResult } from '@/types/api'
+import { clampAdminPageSize, type PageResult } from '@/types/api'
 import type { ExampleFormPayload, ExampleItem, ExampleQuery } from '@/types/example'
 import request from '@/utils/request'
 
 export const getExamplePageApi = (params: ExampleQuery) => {
+  const normalizedParams: ExampleQuery = {
+    ...params,
+    pageSize: clampAdminPageSize(params.pageSize, 10)
+  }
+
   if (IS_MOCK_ENABLED) {
-    return mockGetExamplePageApi(params)
+    return mockGetExamplePageApi(normalizedParams)
   }
 
   // TODO: 替换为后台管理端真实列表接口，例如 GET /admin/examples
-  return request.get<PageResult<ExampleItem>>('/admin/examples', { params })
+  return request.get<PageResult<ExampleItem>>('/admin/examples', { params: normalizedParams })
 }
 
 export const getExampleDetailApi = (id: string) => {

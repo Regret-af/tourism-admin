@@ -1,4 +1,4 @@
-import type { PageResult } from '@/types/api'
+import { clampAdminPageSize, type PageResult } from '@/types/api'
 import type {
   DiaryDetail,
   DiaryListItem,
@@ -9,8 +9,13 @@ import type {
 import request from '@/utils/request'
 
 export const getDiaryPageApi = (params: DiaryListQuery) => {
+  const normalizedParams: DiaryListQuery = {
+    ...params,
+    pageSize: clampAdminPageSize(params.pageSize, 10)
+  }
+
   return request.get<PageResult<DiaryListItem>>('/admin/travel-diaries', {
-    params
+    params: normalizedParams
   })
 }
 
