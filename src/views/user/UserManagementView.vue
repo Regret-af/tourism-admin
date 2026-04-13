@@ -178,9 +178,6 @@ void loadData()
     <div class="page-header">
       <div>
         <h1 class="page-title">用户管理</h1>
-        <p class="page-subtitle">
-          严格对接接口文档，仅提供用户列表、用户详情与用户状态切换，状态与角色文案统一复用全局元数据中心。
-        </p>
       </div>
     </div>
 
@@ -191,14 +188,14 @@ void loadData()
       :closable="false"
       show-icon
       :title="metaStore.errorMessage"
-      description="筛选项为空时不会使用本地硬编码字典替代后端结果。"
     />
 
-    <section class="page-card filter-card">
+    <section v-loading="loading" class="page-card filter-card">
       <el-form :inline="true" :model="queryState">
         <el-form-item label="关键词">
           <el-input
             v-model="queryState.keyword"
+            :disabled="loading"
             clearable
             placeholder="邮箱 / 用户名 / 昵称"
             @keyup.enter="handleSearch"
@@ -208,6 +205,7 @@ void loadData()
         <el-form-item label="状态">
           <el-select
             v-model="queryState.status"
+            :disabled="loading"
             clearable
             placeholder="全部状态"
             style="width: 140px"
@@ -224,6 +222,7 @@ void loadData()
         <el-form-item label="角色">
           <el-select
             v-model="queryState.roleCode"
+            :disabled="loading"
             clearable
             placeholder="全部角色"
             style="width: 160px"
@@ -240,6 +239,7 @@ void loadData()
         <el-form-item label="创建时间">
           <el-date-picker
             v-model="createdRange"
+            :disabled="loading"
             type="datetimerange"
             range-separator="至"
             start-placeholder="开始时间"
@@ -249,8 +249,8 @@ void loadData()
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="handleSearch">查询</el-button>
-          <el-button @click="handleReset">重置</el-button>
+          <el-button :loading="loading" type="primary" @click="handleSearch">查询</el-button>
+          <el-button :disabled="loading" @click="handleReset">重置</el-button>
         </el-form-item>
       </el-form>
     </section>
