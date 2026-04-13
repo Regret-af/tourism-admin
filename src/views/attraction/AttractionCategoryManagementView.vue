@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { computed, reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
@@ -81,7 +81,9 @@ const formState = reactive<CategoryFormState>(createDefaultFormState())
 const sortState = reactive<SortFormState>(createDefaultSortState())
 
 const statusOptions = computed(() => metaStore.getOptions('attractionCategoryStatuses'))
-const dialogTitle = computed(() => (dialogMode.value === 'create' ? '新增景点分类' : '编辑景点分类'))
+const dialogTitle = computed(() =>
+  dialogMode.value === 'create' ? '新增景点分类' : '编辑景点分类'
+)
 const detailTitle = computed(() => detailData.value?.name || '分类详情')
 
 const integerValidator = (_rule: unknown, value: number, callback: (error?: Error) => void) => {
@@ -347,9 +349,6 @@ void loadData()
     <div class="page-header">
       <div>
         <h1 class="page-title">景点分类管理</h1>
-        <p class="page-subtitle">
-          对接 `/api/v1/admin/attraction-categories`，支持分类查询、详情查看、新增、编辑、状态切换与排序调整。
-        </p>
       </div>
     </div>
 
@@ -413,25 +412,22 @@ void loadData()
         row-key="id"
         empty-text="暂无景点分类数据"
       >
-        <el-table-column label="分类信息" min-width="240">
+        <el-table-column label="分类信息" min-width="150">
           <template #default="{ row }">
-            <div class="category-cell">
-              <div class="category-symbol">{{ row.name.slice(0, 1) }}</div>
-              <div class="category-content">
-                <div class="category-name">{{ row.name }}</div>
-                <div class="category-code">编码：{{ row.code }}</div>
-              </div>
+            <div class="category-content">
+              <div class="category-name">{{ row.name }}</div>
+              <div class="category-code">编码：{{ row.code }}</div>
             </div>
           </template>
         </el-table-column>
 
-        <el-table-column label="排序值" min-width="120" align="center">
+        <el-table-column label="排序值" min-width="100" align="center">
           <template #default="{ row }">
             <span class="sort-chip">{{ row.sortOrder }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column label="状态" min-width="120">
+        <el-table-column label="状态" min-width="110" align="center">
           <template #default="{ row }">
             <el-tag :type="getStatusTagType(row.status)" effect="light">
               {{ metaStore.getLabel('attractionCategoryStatuses', row.status, String(row.status)) }}
@@ -445,31 +441,34 @@ void loadData()
           </template>
         </el-table-column>
 
-        <el-table-column label="创建时间" min-width="180">
-          <template #default="{ row }">
-            {{ formatDateTime(row.createdAt) }}
-          </template>
-        </el-table-column>
-
-        <el-table-column label="更新时间" min-width="180">
+        <el-table-column label="更新时间" width="180" align="center">
           <template #default="{ row }">
             {{ formatDateTime(row.updatedAt) }}
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" fixed="right" min-width="260">
+        <el-table-column label="操作" fixed="right" width="400" align="center">
           <template #default="{ row }">
-            <el-button link type="primary" @click="handleViewDetail(row)">详情</el-button>
-            <el-button link type="primary" @click="openEditDialog(row)">编辑</el-button>
-            <el-button link type="primary" @click="openSortDialog(row)">排序</el-button>
-            <el-button
-              link
-              :loading="updatingStatusId === row.id"
-              :type="isCategoryEnabled(row.status) ? 'danger' : 'success'"
-              @click="handleToggleStatus(row)"
-            >
-              {{ isCategoryEnabled(row.status) ? '停用' : '启用' }}
-            </el-button>
+            <div class="operation-actions">
+              <el-button link type="primary" @click="openEditDialog(row)">编辑</el-button>
+              <el-button
+                link
+                :loading="updatingStatusId === row.id"
+                :type="isCategoryEnabled(row.status) ? 'danger' : 'success'"
+                @click="handleToggleStatus(row)"
+              >
+                {{ isCategoryEnabled(row.status) ? '停用' : '启用' }}
+              </el-button>
+              <el-dropdown class="operation-dropdown" trigger="click">
+                <el-button link type="primary">更多</el-button>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item @click="handleViewDetail(row)">详情</el-dropdown-item>
+                    <el-dropdown-item @click="openSortDialog(row)">排序</el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -498,7 +497,6 @@ void loadData()
       <div v-loading="detailLoading" class="detail-shell">
         <template v-if="detailData">
           <section class="detail-hero">
-            <div class="detail-symbol">{{ detailData.name.slice(0, 1) }}</div>
             <div class="detail-hero-content">
               <div class="detail-name-row">
                 <span class="detail-name">{{ detailData.name }}</span>
@@ -576,14 +574,6 @@ void loadData()
         </el-form-item>
       </el-form>
 
-      <div class="dialog-tip">
-        {{
-          dialogMode === 'create'
-            ? '新增接口提交字段为 name、code、sortOrder、status。'
-            : '编辑接口仅提交 name、code，不在此处修改状态和排序。'
-        }}
-      </div>
-
       <template #footer>
         <span class="dialog-footer">
           <el-button :disabled="submitLoading" @click="formVisible = false">取消</el-button>
@@ -610,8 +600,6 @@ void loadData()
           <el-input-number v-model="sortState.sortOrder" :min="0" :precision="0" />
         </el-form-item>
       </el-form>
-
-      <div class="dialog-tip">排序接口仅提交 `sortOrder`，不会修改分类状态或基础信息。</div>
 
       <template #footer>
         <span class="dialog-footer">
@@ -658,35 +646,6 @@ void loadData()
   font-weight: var(--app-font-weight-bold);
 }
 
-.category-cell {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.category-symbol,
-.detail-symbol {
-  display: grid;
-  flex-shrink: 0;
-  place-items: center;
-  border-radius: 16px;
-  background: linear-gradient(135deg, rgba(13, 148, 136, 0.18), rgba(59, 130, 246, 0.14));
-  color: #0f766e;
-  font-weight: var(--app-font-weight-extrabold);
-}
-
-.category-symbol {
-  width: 44px;
-  height: 44px;
-}
-
-.detail-symbol {
-  width: 72px;
-  height: 72px;
-  border-radius: 22px;
-  font-size: var(--app-typo-title-lg-size);
-}
-
 .category-content {
   min-width: 0;
 }
@@ -722,6 +681,23 @@ void loadData()
   border-radius: 999px;
   background: rgba(15, 23, 42, 0.06);
   font-weight: var(--app-font-weight-bold);
+}
+
+.operation-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  vertical-align: middle;
+}
+
+.operation-dropdown {
+  display: inline-flex;
+  align-items: center;
+}
+
+.operation-actions :deep(.el-button + .el-button) {
+  margin-left: 0;
 }
 
 .pagination-wrap {
@@ -814,15 +790,6 @@ void loadData()
   font-weight: var(--app-typo-title-sm-weight);
   line-height: var(--app-typo-title-sm-line-height);
   letter-spacing: var(--app-typo-title-sm-letter-spacing);
-}
-
-.dialog-tip {
-  margin-top: 8px;
-  color: var(--app-text-secondary);
-  font-size: var(--app-typo-body-sm-size);
-  font-weight: var(--app-typo-body-sm-weight);
-  line-height: var(--app-typo-body-sm-line-height);
-  letter-spacing: var(--app-typo-body-sm-letter-spacing);
 }
 
 @media (max-width: 960px) {
