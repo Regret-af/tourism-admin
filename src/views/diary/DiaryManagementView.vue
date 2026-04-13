@@ -313,6 +313,7 @@ void loadData()
     />
 
     <el-alert
+      v-if="false"
       class="content-type-alert"
       type="info"
       :closable="false"

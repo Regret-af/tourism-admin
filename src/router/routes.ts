@@ -39,14 +39,31 @@ export const asyncRoutes: RouteRecordRaw[] = [
   {
     path: '/diaries',
     component: AdminLayout,
+    redirect: '/diaries/content',
+    meta: {
+      title: '日记管理',
+      icon: 'Notebook',
+      requiresAuth: true,
+      alwaysShow: true
+    },
     children: [
       {
-        path: '',
+        path: 'content',
         name: 'DiaryManagement',
         component: () => import('@/views/diary/DiaryManagementView.vue'),
         meta: {
-          title: '日记管理',
-          icon: 'Notebook',
+          title: '内容管理',
+          icon: 'Document',
+          requiresAuth: true
+        }
+      },
+      {
+        path: 'comments',
+        name: 'DiaryCommentManagement',
+        component: () => import('@/views/diary/DiaryCommentManagementView.vue'),
+        meta: {
+          title: '评论管理',
+          icon: 'ChatDotRound',
           requiresAuth: true
         }
       }
