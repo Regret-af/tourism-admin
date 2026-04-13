@@ -72,6 +72,7 @@ export const asyncRoutes: RouteRecordRaw[] = [
   {
     path: '/attractions',
     component: AdminLayout,
+    redirect: '/attractions/list',
     meta: {
       title: '景点管理',
       icon: 'Place',
@@ -79,6 +80,16 @@ export const asyncRoutes: RouteRecordRaw[] = [
       alwaysShow: true
     },
     children: [
+      {
+        path: 'list',
+        name: 'AttractionManagement',
+        component: () => import('@/views/attraction/AttractionManagementView.vue'),
+        meta: {
+          title: '景点管理',
+          icon: 'Place',
+          requiresAuth: true
+        }
+      },
       {
         path: 'categories',
         name: 'AttractionCategoryManagement',
