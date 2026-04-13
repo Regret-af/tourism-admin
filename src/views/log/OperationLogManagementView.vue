@@ -101,15 +101,29 @@ const getTagTypeBySource = (source: string) => {
   return String(source).toUpperCase() === 'ADMIN' ? 'success' : 'info'
 }
 
+const toSafeNumber = (value: unknown, fallback: number) => {
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? parsed : fallback
+}
+
 const loadData = async () => {
   syncCreatedRangeToQuery()
   loading.value = true
 
   try {
-    pageData.value = await getOperationLogPageApi({
+    const response = await getOperationLogPageApi({
       ...queryState,
       requestIp: queryState.requestIp.trim()
     })
+
+    pageData.value = {
+      ...response,
+      pageNum: toSafeNumber(response.pageNum, 1),
+      pageSize: toSafeNumber(response.pageSize, 10),
+      total: toSafeNumber(response.total, 0),
+      pages: toSafeNumber(response.pages, 1)
+    }
+
     queryState.pageNum = pageData.value.pageNum
     queryState.pageSize = pageData.value.pageSize
   } catch (error) {
@@ -380,13 +394,23 @@ void loadData()
           </template>
         </el-table-column>
 
-        <el-table-column label="业务 ID" min-width="80" align="center" show-overflow-tooltip>
+        <el-table-column
+          label="业务 ID"
+          min-width="80"
+          align="center"
+          show-overflow-tooltip
+        >
           <template #default="{ row }">
             {{ row.bizId || '--' }}
           </template>
         </el-table-column>
 
-        <el-table-column label="操作描述" min-width="200" align="center" show-overflow-tooltip>
+        <el-table-column
+          label="操作描述"
+          min-width="200"
+          align="center"
+          show-overflow-tooltip
+        >
           <template #default="{ row }">
             <div class="description-text">{{ row.description || '--' }}</div>
           </template>

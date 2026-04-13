@@ -49,6 +49,9 @@ interface PoiState {
   selectedUid: string
 }
 
+const MAX_PAGE_SIZE = 50
+const DEFAULT_PAGE_SIZE = 10
+
 const metaStore = useMetaStore()
 const loading = ref(false)
 const detailLoading = ref(false)
@@ -68,7 +71,7 @@ const categoryOptions = ref<AttractionCategoryListItem[]>([])
 const poiOptions = ref<AttractionPoiSearchItem[]>([])
 const pageData = ref<PageResult<AttractionListItem>>({
   pageNum: 1,
-  pageSize: 10,
+  pageSize: DEFAULT_PAGE_SIZE,
   total: 0,
   pages: 1,
   list: []
@@ -76,7 +79,7 @@ const pageData = ref<PageResult<AttractionListItem>>({
 
 const queryState = reactive<AttractionListQuery>({
   pageNum: 1,
-  pageSize: 10,
+  pageSize: DEFAULT_PAGE_SIZE,
   keyword: '',
   categoryId: undefined,
   status: undefined,
@@ -215,6 +218,21 @@ const ensureCategoryOption = (category: AttractionCategorySummary | string | nul
 const getStatusTagType = (status: number) => (Number(status) === 1 ? 'success' : 'info')
 const isAttractionOnline = (status: number) => Number(status) === 1
 const getNextStatus = (status: number) => (isAttractionOnline(status) ? 0 : 1)
+const toSafeNumber = (value: unknown, fallback: number) => {
+  const parsedValue =
+    typeof value === 'number' ? value : Number.parseInt(String(value ?? ''), 10)
+
+  return Number.isFinite(parsedValue) ? parsedValue : fallback
+}
+
+const normalizePageResult = <T,>(result: PageResult<T>): PageResult<T> => ({
+  ...result,
+  pageNum: toSafeNumber(result.pageNum, 1),
+  pageSize: toSafeNumber(result.pageSize, DEFAULT_PAGE_SIZE),
+  total: toSafeNumber(result.total, 0),
+  pages: toSafeNumber(result.pages, 1)
+})
+
 const normalizeOptionalText = (value: string) => {
   const trimmed = value.trim()
   return trimmed || undefined
@@ -264,10 +282,12 @@ const loadData = async () => {
   loading.value = true
 
   try {
-    pageData.value = await getAttractionPageApi({
-      ...queryState,
-      keyword: queryState.keyword.trim()
-    })
+    pageData.value = normalizePageResult(
+      await getAttractionPageApi({
+        ...queryState,
+        keyword: queryState.keyword.trim()
+      })
+    )
   } catch (error) {
     showRequestError(error, '景点列表加载失败')
   } finally {
@@ -279,13 +299,27 @@ const loadCategoryOptions = async (keyword = '') => {
   categoryLoading.value = true
 
   try {
-    const response = await getAttractionCategoryPageApi({
-      pageNum: 1,
-      pageSize: 1000,
-      keyword: keyword.trim(),
-      status: undefined
-    })
-    mergeCategoryOptions(response.list)
+    const normalizedKeyword = keyword.trim()
+    let pageNum = 1
+    let pages = 1
+    const items: AttractionCategoryListItem[] = []
+
+    while (pageNum <= pages) {
+      const response = normalizePageResult(
+        await getAttractionCategoryPageApi({
+          pageNum,
+          pageSize: MAX_PAGE_SIZE,
+          keyword: normalizedKeyword,
+          status: undefined
+        })
+      )
+
+      items.push(...response.list)
+      pages = Math.max(response.pages, 1)
+      pageNum += 1
+    }
+
+    mergeCategoryOptions(items)
   } catch (error) {
     showRequestError(error, '景点分类选项加载失败')
   } finally {
@@ -303,7 +337,7 @@ const handleReset = () => {
   queryState.categoryId = undefined
   queryState.status = undefined
   queryState.pageNum = 1
-  queryState.pageSize = 10
+  queryState.pageSize = DEFAULT_PAGE_SIZE
   queryState.createdStart = undefined
   queryState.createdEnd = undefined
   createdRange.value = []
@@ -316,7 +350,7 @@ const handlePageChange = (pageNum: number) => {
 }
 
 const handlePageSizeChange = (pageSize: number) => {
-  queryState.pageSize = pageSize
+  queryState.pageSize = Math.min(pageSize, MAX_PAGE_SIZE)
   queryState.pageNum = 1
   void loadData()
 }
@@ -507,10 +541,7 @@ void loadCategoryOptions()
 <template>
   <section>
     <div class="page-header">
-      <div>
-        <h1 class="page-title">景点管理</h1>
-        <p class="page-subtitle">维护景点基础信息，支持百度地点搜索与一键回填</p>
-      </div>
+      <h1 class="page-title">景点管理</h1>
     </div>
 
     <el-alert
@@ -689,7 +720,7 @@ void loadCategoryOptions()
           layout="total, sizes, prev, pager, next, jumper"
           :current-page="pageData.pageNum"
           :page-size="pageData.pageSize"
-          :page-sizes="[10, 20, 50, 100]"
+          :page-sizes="[10, 20, 50]"
           :total="pageData.total"
           @current-change="handlePageChange"
           @size-change="handlePageSizeChange"
@@ -810,6 +841,7 @@ void loadCategoryOptions()
               remote
               reserve-keyword
               :loading="poiSearchLoading"
+              popper-class="poi-select-dropdown"
               placeholder="输入地点名称后搜索百度地点"
               style="width: 100%"
               :remote-method="handlePoiRemoteSearch"
@@ -836,7 +868,6 @@ void loadCategoryOptions()
                       <span class="poi-option-value">{{ item.address || '--' }}</span>
                     </div>
                   </div>
-                  <div class="poi-option-uid">UID：{{ item.uid }}</div>
                 </div>
               </el-option>
             </el-select>
@@ -922,7 +953,7 @@ void loadCategoryOptions()
               <el-input
                 v-model="formState.locationText"
                 maxlength="255"
-                placeholder="文档约定为省+市"
+                placeholder="请输入地点文本"
               />
             </el-form-item>
 
@@ -1270,11 +1301,6 @@ void loadCategoryOptions()
   word-break: break-word;
 }
 
-.poi-option-uid {
-  margin-top: 6px;
-  font-size: var(--app-typo-body-xs-size);
-}
-
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1309,5 +1335,19 @@ void loadCategoryOptions()
     width: 100%;
     height: 200px;
   }
+}
+</style>
+
+<style lang="scss">
+.poi-select-dropdown .el-select-dropdown__item {
+  height: auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  line-height: 1.5;
+  white-space: normal;
+}
+
+.poi-select-dropdown .poi-dropdown-option {
+  width: 100%;
 }
 </style>
