@@ -37,6 +37,28 @@ export const asyncRoutes: RouteRecordRaw[] = [
     ]
   },
   {
+    path: '/attractions',
+    component: AdminLayout,
+    meta: {
+      title: '景点管理',
+      icon: 'Place',
+      requiresAuth: true,
+      alwaysShow: true
+    },
+    children: [
+      {
+        path: 'categories',
+        name: 'AttractionCategoryManagement',
+        component: () => import('@/views/attraction/AttractionCategoryManagementView.vue'),
+        meta: {
+          title: '景点分类管理',
+          icon: 'CollectionTag',
+          requiresAuth: true
+        }
+      }
+    ]
+  },
+  {
     path: '/example',
     component: AdminLayout,
     meta: {
