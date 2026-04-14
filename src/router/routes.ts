@@ -9,7 +9,7 @@ export const dashboardRoute: RouteRecordRaw = {
     {
       path: '',
       name: 'Dashboard',
-      component: () => import('@/views/dashboard/DashboardView.vue'),
+      component: () => import('@/views/dashboard/DashboardStatisticsView.vue'),
       meta: {
         title: '首页',
         icon: 'House',
