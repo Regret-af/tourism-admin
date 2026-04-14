@@ -6,6 +6,7 @@ import {
   getOperationLogPageApi
 } from '@/api/operationLogs'
 import { getUserOptionsApi } from '@/api/users'
+import RemoteUserSelect from '@/components/form/RemoteUserSelect.vue'
 import { useMetaStore } from '@/stores/meta'
 import {
   clampAdminPageSize,
@@ -80,17 +81,6 @@ const showRequestError = (error: unknown, fallback: string) => {
   }
 
   ElMessage.error(getApiErrorMessage(error, fallback))
-}
-
-const getUserOptionLabel = (option: UserOptionItem) => {
-  const nickname = option.nickname || '--'
-  const email = option.email || '--'
-  return `${nickname}（${email}）`
-}
-
-const getUserOptionInitial = (option: UserOptionItem) => {
-  const source = option.nickname || option.email || '?'
-  return source.slice(0, 1).toUpperCase()
 }
 
 const getLogUserText = (
@@ -225,38 +215,15 @@ void loadData()
     <section v-loading="loading" class="page-card filter-card">
       <el-form :inline="true" :model="queryState">
         <el-form-item label="操作用户">
-          <el-select
+          <RemoteUserSelect
             v-model="queryState.userId"
             :disabled="loading"
             :loading="userLoading"
-            clearable
-            filterable
-            remote
-            reserve-keyword
+            :options="userOptions"
             placeholder="搜索昵称 / 邮箱"
             style="width: 280px"
-            popper-class="operation-user-select-dropdown"
-            :remote-method="loadUserOptions"
-          >
-            <el-option
-              v-for="option in userOptions"
-              :key="option.id"
-              :label="getUserOptionLabel(option)"
-              :value="option.id"
-            >
-              <div class="user-option">
-                <el-avatar :size="32" :src="option.avatarUrl || undefined">
-                  {{ getUserOptionInitial(option) }}
-                </el-avatar>
-                <div class="user-option-content">
-                  <div class="user-option-title">
-                    {{ option.nickname || '--' }}
-                  </div>
-                  <div class="user-option-meta">{{ option.email || '--' }}</div>
-                </div>
-              </div>
-            </el-option>
-          </el-select>
+            @search="loadUserOptions"
+          />
         </el-form-item>
 
         <el-form-item label="模块">
@@ -575,21 +542,11 @@ void loadData()
   font-weight: var(--app-font-weight-bold);
 }
 
-.user-option {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-height: 44px;
-  min-width: 0;
-}
-
-.user-option-content,
 .detail-hero-content {
   min-width: 0;
   flex: 1;
 }
 
-.user-option-title,
 .entity-title,
 .detail-name {
   overflow: hidden;
@@ -601,7 +558,6 @@ void loadData()
   letter-spacing: var(--app-typo-title-sm-letter-spacing);
 }
 
-.user-option-meta,
 .detail-subline {
   margin-top: 4px;
   overflow: hidden;
@@ -673,12 +629,6 @@ void loadData()
   white-space: pre-wrap;
 }
 
-:global(.operation-user-select-dropdown .el-select-dropdown__item) {
-  height: auto;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  line-height: normal;
-}
 
 @media (max-width: 1200px) {
   .table-toolbar {
@@ -694,3 +644,4 @@ void loadData()
   }
 }
 </style>
+

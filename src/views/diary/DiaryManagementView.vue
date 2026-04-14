@@ -8,6 +8,7 @@ import {
   updateDiaryStatusApi
 } from '@/api/diaries'
 import { getUserOptionsApi } from '@/api/users'
+import RemoteUserSelect from '@/components/form/RemoteUserSelect.vue'
 import { useMetaStore } from '@/stores/meta'
 import {
   clampAdminPageSize,
@@ -328,16 +329,6 @@ void loadData()
       show-icon
       :title="metaStore.errorMessage"
     />
-
-    <el-alert
-      v-if="false"
-      class="content-type-alert"
-      type="info"
-      :closable="false"
-      show-icon
-      title="内容类型 contentType 来源于业务表 diary_category，当前接口文档未提供类型选项接口，因此本页按原值查询与展示。"
-    />
-
     <section v-loading="loading" class="page-card filter-card">
       <el-form :inline="true" :model="queryState">
         <el-form-item label="关键词">
@@ -351,25 +342,15 @@ void loadData()
         </el-form-item>
 
         <el-form-item label="作者">
-          <el-select
+          <RemoteUserSelect
             v-model="queryState.authorId"
             :disabled="loading"
             :loading="authorLoading"
-            clearable
-            filterable
-            remote
-            reserve-keyword
+            :options="authorOptions"
             placeholder="搜索作者昵称 / 邮箱"
             style="width: 240px"
-            :remote-method="loadAuthorOptions"
-          >
-            <el-option
-              v-for="option in authorOptions"
-              :key="option.id"
-              :label="`${option.nickname || '--'}（${option.email || '--'}）`"
-              :value="option.id"
-            />
-          </el-select>
+            @search="loadAuthorOptions"
+          />
         </el-form-item>
 
         <el-form-item label="状态">
@@ -700,7 +681,6 @@ void loadData()
 
 <style scoped lang="scss">
 .meta-alert,
-.content-type-alert,
 .filter-card,
 .table-card {
   margin-bottom: 18px;
@@ -937,3 +917,4 @@ void loadData()
   }
 }
 </style>
+

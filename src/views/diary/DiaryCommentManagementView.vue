@@ -1,8 +1,10 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { computed, reactive, ref } from 'vue'
 import { getDiaryCommentPageApi, updateDiaryCommentStatusApi } from '@/api/comments'
+import { getDiaryOptionsApi } from '@/api/diaries'
 import { getUserOptionsApi } from '@/api/users'
+import RemoteUserSelect from '@/components/form/RemoteUserSelect.vue'
 import { useMetaStore } from '@/stores/meta'
 import {
   clampAdminPageSize,
@@ -12,17 +14,20 @@ import {
   type PageResult
 } from '@/types/api'
 import type { DiaryCommentListItem, DiaryCommentListQuery } from '@/types/comment'
+import type { DiaryOptionItem } from '@/types/diary'
 import type { UserOptionItem } from '@/types/user'
 import { formatDateTime } from '@/utils/format'
 
 const metaStore = useMetaStore()
 const loading = ref(false)
-const authorLoading = ref(false)
+const userLoading = ref(false)
+const diaryLoading = ref(false)
 const detailVisible = ref(false)
 const updatingCommentId = ref('')
 const createdRange = ref<[string, string] | []>([])
 const detailData = ref<DiaryCommentListItem | null>(null)
 const userOptions = ref<UserOptionItem[]>([])
+const diaryOptions = ref<DiaryOptionItem[]>([])
 const pageData = ref<PageResult<DiaryCommentListItem>>({
   pageNum: 1,
   pageSize: 10,
@@ -117,7 +122,7 @@ const loadUserOptions = async (keyword = '') => {
     return
   }
 
-  authorLoading.value = true
+  userLoading.value = true
 
   try {
     userOptions.value = await getUserOptionsApi({
@@ -127,7 +132,31 @@ const loadUserOptions = async (keyword = '') => {
   } catch (error) {
     showRequestError(error, '评论用户选项加载失败')
   } finally {
-    authorLoading.value = false
+    userLoading.value = false
+  }
+}
+
+const loadDiaryOptions = async (keyword = '') => {
+  const trimmedKeyword = keyword.trim()
+
+  if (!trimmedKeyword) {
+    diaryOptions.value = queryState.diaryId
+      ? diaryOptions.value.filter((item) => item.id === queryState.diaryId)
+      : []
+    return
+  }
+
+  diaryLoading.value = true
+
+  try {
+    diaryOptions.value = await getDiaryOptionsApi({
+      keyword: trimmedKeyword,
+      pageSize: 20
+    })
+  } catch (error) {
+    showRequestError(error, '日记选项加载失败')
+  } finally {
+    diaryLoading.value = false
   }
 }
 
@@ -147,6 +176,7 @@ const handleReset = () => {
   queryState.createdEnd = undefined
   createdRange.value = []
   userOptions.value = []
+  diaryOptions.value = []
   void loadData()
 }
 
@@ -174,8 +204,8 @@ const handleToggleStatus = async (row: DiaryCommentListItem) => {
   try {
     await ElMessageBox.confirm(
       nextStatus === 1
-        ? `确认恢复该评论的前台显示状态吗？`
-        : `确认隐藏该评论吗？隐藏后前台将不再展示该评论。`,
+        ? '确认恢复该评论的前台显示状态吗？'
+        : '确认隐藏该评论吗？隐藏后前台将不再展示该评论。',
       `${actionText}评论`,
       {
         type: 'warning',
@@ -227,14 +257,6 @@ void loadData()
       :title="metaStore.errorMessage"
     />
 
-    <el-alert
-      class="filter-alert"
-      type="info"
-      :closable="false"
-      show-icon
-      title="评论用户支持远程搜索；接口文档未提供日记选项接口，因此日记筛选按日记 ID 精确查询。"
-    />
-
     <section v-loading="loading" class="page-card filter-card">
       <el-form :inline="true" :model="queryState">
         <el-form-item label="关键词">
@@ -247,36 +269,53 @@ void loadData()
           />
         </el-form-item>
 
-        <el-form-item label="日记 ID">
-          <el-input
+        <el-form-item label="日记">
+          <el-select
             v-model="queryState.diaryId"
             :disabled="loading"
-            clearable
-            placeholder="请输入日记 ID"
-            @keyup.enter="handleSearch"
-          />
-        </el-form-item>
-
-        <el-form-item label="评论用户">
-          <el-select
-            v-model="queryState.userId"
-            :disabled="loading"
-            :loading="authorLoading"
+            :loading="diaryLoading"
             clearable
             filterable
             remote
             reserve-keyword
-            placeholder="搜索昵称 / 邮箱"
-            style="width: 240px"
-            :remote-method="loadUserOptions"
+            placeholder="搜索日记标题"
+            style="width: 280px"
+            popper-class="diary-option-select-dropdown"
+            :remote-method="loadDiaryOptions"
           >
             <el-option
-              v-for="option in userOptions"
+              v-for="option in diaryOptions"
               :key="option.id"
-              :label="`${option.nickname || '--'}（${option.email || '--'}）`"
+              :label="option.title || '--'"
               :value="option.id"
-            />
+            >
+              <div class="diary-option">
+                <el-image
+                  v-if="option.coverUrl"
+                  :src="option.coverUrl"
+                  fit="cover"
+                  class="diary-option-cover"
+                />
+                <div v-else class="diary-option-cover is-placeholder">日记</div>
+                <div class="diary-option-content">
+                  <div class="diary-option-title">{{ option.title || '--' }}</div>
+                  <div class="diary-option-meta">{{ option.author?.nickname || '--' }}</div>
+                </div>
+              </div>
+            </el-option>
           </el-select>
+        </el-form-item>
+
+        <el-form-item label="评论用户">
+          <RemoteUserSelect
+            v-model="queryState.userId"
+            :disabled="loading"
+            :loading="userLoading"
+            :options="userOptions"
+            placeholder="搜索昵称 / 邮箱"
+            style="width: 240px"
+            @search="loadUserOptions"
+          />
         </el-form-item>
 
         <el-form-item label="状态">
@@ -452,7 +491,6 @@ void loadData()
 
 <style scoped lang="scss">
 .meta-alert,
-.filter-alert,
 .filter-card,
 .table-card {
   margin-bottom: 18px;
@@ -484,6 +522,37 @@ void loadData()
   font-weight: var(--app-font-weight-bold);
 }
 
+.diary-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  min-height: 44px;
+}
+
+.diary-option-cover {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 1px solid var(--app-border);
+  border-radius: 10px;
+}
+
+.diary-option-cover.is-placeholder {
+  display: grid;
+  place-items: center;
+  background: rgba(15, 23, 42, 0.06);
+  color: var(--app-text-secondary);
+  font-size: var(--app-typo-body-xs-size);
+}
+
+.diary-option-content {
+  min-width: 0;
+  flex: 1;
+}
+
+.diary-option-title,
 .entity-title,
 .detail-name {
   overflow: hidden;
@@ -495,7 +564,7 @@ void loadData()
   letter-spacing: var(--app-typo-title-sm-letter-spacing);
 }
 
-.entity-meta,
+.diary-option-meta,
 .relation-line,
 .detail-subline {
   margin-top: 6px;
@@ -583,5 +652,12 @@ void loadData()
     align-items: stretch;
     flex-direction: column;
   }
+}
+
+:global(.diary-option-select-dropdown .el-select-dropdown__item) {
+  height: auto;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  line-height: normal;
 }
 </style>

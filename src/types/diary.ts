@@ -41,6 +41,19 @@ export interface DiaryDetail extends DiaryListItem {
   content?: string | null
 }
 
+export interface DiaryOptionQuery {
+  keyword?: string
+  authorId?: string
+  pageSize?: number
+}
+
+export interface DiaryOptionItem {
+  id: string
+  title: string
+  coverUrl?: string | null
+  author?: DiaryAuthor | null
+}
+
 export interface UpdateDiaryStatusPayload {
   status: number
 }

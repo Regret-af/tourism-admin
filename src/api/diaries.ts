@@ -3,6 +3,8 @@ import type {
   DiaryDetail,
   DiaryListItem,
   DiaryListQuery,
+  DiaryOptionItem,
+  DiaryOptionQuery,
   UpdateDiaryDeletedStatusPayload,
   UpdateDiaryStatusPayload
 } from '@/types/diary'
@@ -21,6 +23,19 @@ export const getDiaryPageApi = (params: DiaryListQuery) => {
 
 export const getDiaryDetailApi = (id: string) => {
   return request.get<DiaryDetail>(`/admin/travel-diaries/${id}`)
+}
+
+export const getDiaryOptionsApi = (params?: DiaryOptionQuery) => {
+  const normalizedParams: DiaryOptionQuery | undefined = params
+    ? {
+        ...params,
+        pageSize: clampAdminPageSize(params.pageSize, 10)
+      }
+    : undefined
+
+  return request.get<DiaryOptionItem[]>('/admin/travel-diaries/options', {
+    params: normalizedParams
+  })
 }
 
 export const updateDiaryStatusApi = (
