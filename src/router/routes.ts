@@ -1,4 +1,4 @@
-import type { RouteRecordRaw } from 'vue-router'
+﻿import type { RouteRecordRaw } from 'vue-router'
 
 const AdminLayout = () => import('@/layout/AdminLayout.vue')
 
@@ -45,7 +45,7 @@ export const asyncRoutes: RouteRecordRaw[] = [
         name: 'OperationLogManagement',
         component: () => import('@/views/log/OperationLogManagementView.vue'),
         meta: {
-          title: '日志管理',
+          title: '操作日志',
           icon: 'Tickets',
           requiresAuth: true
         }
@@ -99,8 +99,7 @@ export const asyncRoutes: RouteRecordRaw[] = [
       {
         path: 'list',
         name: 'AttractionManagement',
-        component: () =>
-          import('@/views/attraction/AttractionManagementView.vue'),
+        component: () => import('@/views/attraction/AttractionManagementView.vue'),
         meta: {
           title: '景点管理',
           icon: 'Place',
@@ -110,59 +109,11 @@ export const asyncRoutes: RouteRecordRaw[] = [
       {
         path: 'categories',
         name: 'AttractionCategoryManagement',
-        component: () =>
-          import('@/views/attraction/AttractionCategoryManagementView.vue'),
+        component: () => import('@/views/attraction/AttractionCategoryManagementView.vue'),
         meta: {
           title: '景点分类管理',
           icon: 'CollectionTag',
           requiresAuth: true
-        }
-      }
-    ]
-  },
-  {
-    path: '/example',
-    component: AdminLayout,
-    meta: {
-      title: '示例管理',
-      icon: 'Files',
-      requiresAuth: true,
-      alwaysShow: true
-    },
-    children: [
-      {
-        path: 'list',
-        name: 'ExampleList',
-        component: () => import('@/views/example/ExampleListView.vue'),
-        meta: {
-          title: '示例列表',
-          icon: 'List',
-          requiresAuth: true,
-          permissions: ['demo:list']
-        }
-      },
-      {
-        path: 'form',
-        name: 'ExampleCreate',
-        component: () => import('@/views/example/ExampleFormView.vue'),
-        meta: {
-          title: '新建示例',
-          requiresAuth: true,
-          permissions: ['demo:create'],
-          hidden: true,
-          activeMenu: '/example/list'
-        }
-      },
-      {
-        path: 'form/:id',
-        name: 'ExampleEdit',
-        component: () => import('@/views/example/ExampleFormView.vue'),
-        meta: {
-          title: '编辑示例',
-          requiresAuth: true,
-          permissions: ['demo:edit'],
-          hidden: true,
-          activeMenu: '/example/list'
         }
       }
     ]

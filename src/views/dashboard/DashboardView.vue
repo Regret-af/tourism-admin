@@ -18,8 +18,8 @@ const currentRoleLabel = computed(() => {
 const cards = computed(() => [
   {
     label: '在线模块',
-    value: '06',
-    tips: '登录、首页、布局、示例列表、示例表单、404'
+    value: '07',
+    tips: '登录、首页、用户、日志、日记、景点、404'
   },
   {
     label: '当前角色',
