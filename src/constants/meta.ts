@@ -11,6 +11,7 @@ export const ADMIN_META_DICTIONARY_LABELS: Record<AdminMetaOptionKey, string> = 
   diaryVisibilities: '日记可见性',
   diaryTopStatuses: '日记置顶状态',
   diaryCommentStatuses: '评论状态',
+  diaryContentTypes: '日记类型',
   userStatuses: '用户状态',
   roleCodes: '角色编码'
 }
@@ -25,6 +26,7 @@ export const ADMIN_META_PRIORITY_KEYS: AdminMetaOptionKey[] = [
   'diaryVisibilities',
   'diaryTopStatuses',
   'diaryCommentStatuses',
+  'diaryContentTypes',
   'operationLogModules',
   'operationLogActions',
   'operationLogSources'

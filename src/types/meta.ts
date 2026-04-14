@@ -16,6 +16,7 @@ export interface AdminMetaOptions {
   diaryVisibilities: MetaOptionItem[]
   diaryTopStatuses: MetaOptionItem[]
   diaryCommentStatuses: MetaOptionItem[]
+  diaryContentTypes: MetaOptionItem[]
   userStatuses: MetaOptionItem[]
   roleCodes: MetaOptionItem[]
 }

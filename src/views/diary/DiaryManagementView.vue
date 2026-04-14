@@ -67,6 +67,7 @@ const statusForm = reactive<StatusFormState>({
 })
 
 const statusOptions = computed(() => metaStore.getOptions('diaryStatuses'))
+const contentTypeOptions = computed(() => metaStore.getOptions('diaryContentTypes'))
 const visibilityOptions = computed(() => metaStore.getOptions('diaryVisibilities'))
 const topOptions = computed(() => metaStore.getOptions('diaryTopStatuses'))
 const deletedOptions = computed(() => metaStore.getOptions('diaryDeletedStatuses'))
@@ -122,7 +123,7 @@ const getContentTypeText = (value: string | number | null | undefined) => {
     return '--'
   }
 
-  return String(value)
+  return metaStore.getLabel('diaryContentTypes', value, String(value))
 }
 
 const loadData = async () => {
@@ -133,7 +134,7 @@ const loadData = async () => {
     pageData.value = normalizePageResult(
       await getDiaryPageApi({
         ...queryState,
-        contentType: queryState.contentType?.trim() || undefined
+        contentType: queryState.contentType === '' ? undefined : queryState.contentType
       }),
       {
         pageNum: 1,
@@ -371,14 +372,20 @@ void loadData()
         </el-form-item>
 
         <el-form-item label="内容类型">
-          <el-input
+          <el-select
             v-model="queryState.contentType"
             :disabled="loading"
             clearable
-            placeholder="按原值筛选"
+            placeholder="全部类型"
             style="width: 160px"
-            @keyup.enter="handleSearch"
-          />
+          >
+            <el-option
+              v-for="option in contentTypeOptions"
+              :key="String(option.value)"
+              :label="option.label"
+              :value="option.value"
+            />
+          </el-select>
         </el-form-item>
 
         <el-form-item label="可见性">

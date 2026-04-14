@@ -9,7 +9,7 @@ export interface DiaryListQuery extends PageQuery {
   keyword: string
   authorId?: string
   status?: number
-  contentType?: string
+  contentType?: string | number
   visibility?: number
   isTop?: number
   isDeleted?: number
